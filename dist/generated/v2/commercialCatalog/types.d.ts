@@ -1,0 +1,229 @@
+/** Describes additional information of an offer, kept for transition from legacy model */
+export interface CommercialCatalogBlob {
+    content?: CommercialCatalogBlobContent;
+}
+/** Describes blob content */
+export interface CommercialCatalogBlobContent {
+    technical?: CommercialCatalogBlobContentTechnical;
+}
+/** Describes offer technical information */
+export interface CommercialCatalogBlobContentTechnical {
+    bandwidth?: CommercialCatalogBlobContentTechnicalNetwork | null;
+    connection?: CommercialCatalogBlobContentTechnicalConnection | null;
+    connectionPerSeconds?: CommercialCatalogBlobContentTechnicalPerSeconds | null;
+    cpu?: CommercialCatalogBlobContentTechnicalCPU | null;
+    ephemeralLocalStorage?: CommercialCatalogBlobContentTechnicalEphemeralStorage | null;
+    gpu?: CommercialCatalogBlobContentTechnicalGPU | null;
+    memory?: CommercialCatalogBlobContentTechnicalMemory | null;
+    name?: string | null;
+    nodes?: CommercialCatalogBlobContentTechnicalNodes | null;
+    nvme?: CommercialCatalogBlobContentTechnicalNvme | null;
+    os?: CommercialCatalogBlobContentTechnicalOS | null;
+    requestPerSeconds?: CommercialCatalogBlobContentTechnicalPerSeconds | null;
+    storage?: CommercialCatalogBlobContentTechnicalStorage | null;
+    throughput?: CommercialCatalogBlobContentTechnicalThroughput | null;
+    volume?: CommercialCatalogBlobContentTechnicalVolume | null;
+    vrack?: CommercialCatalogBlobContentTechnicalNetwork | null;
+}
+/** Describes connection information */
+export interface CommercialCatalogBlobContentTechnicalConnection {
+    clients?: CommercialCatalogBlobContentTechnicalConnectionClients;
+    total?: number;
+}
+/** Describes connection information for concurrent clients */
+export interface CommercialCatalogBlobContentTechnicalConnectionClients {
+    concurrency?: number;
+    number?: number;
+}
+/** Describes a CPU technical details */
+export interface CommercialCatalogBlobContentTechnicalCPU {
+    brand?: string | null;
+    cores?: number;
+    frequency?: number | null;
+    maxFrequency?: number | null;
+    model?: string | null;
+    threads?: number | null;
+    type?: string | null;
+}
+/** Describes disk technical details */
+export interface CommercialCatalogBlobContentTechnicalDisk {
+    capacity?: number;
+    interface?: string | null;
+    iops?: number | null;
+    maximumCapacity?: number | null;
+    number?: number | null;
+    sizeUnit?: string | null;
+    technology?: string | null;
+}
+/** Describes ephemeral storage information */
+export interface CommercialCatalogBlobContentTechnicalEphemeralStorage {
+    disks?: CommercialCatalogBlobContentTechnicalDisk[];
+}
+/** Describes GPU information */
+export interface CommercialCatalogBlobContentTechnicalGPU {
+    memory?: CommercialCatalogBlobContentTechnicalMemory;
+    model?: string;
+    number?: number;
+    performance?: number | null;
+}
+/** Describes memory information */
+export interface CommercialCatalogBlobContentTechnicalMemory {
+    interface?: string | null;
+    size?: number;
+    sizeUnit?: string | null;
+}
+/** Describes network information */
+export interface CommercialCatalogBlobContentTechnicalNetwork {
+    guaranteed?: boolean | null;
+    isMax?: boolean | null;
+    level?: number | null;
+    max?: number | null;
+    maxUnit?: string | null;
+    unit?: string | null;
+    unlimited?: boolean | null;
+}
+/** Describes node information */
+export interface CommercialCatalogBlobContentTechnicalNodes {
+    number?: number;
+}
+/** Describes NVME storage information */
+export interface CommercialCatalogBlobContentTechnicalNvme {
+    disks?: CommercialCatalogBlobContentTechnicalDisk[];
+}
+/** Describes operating system information */
+export interface CommercialCatalogBlobContentTechnicalOS {
+    family?: string;
+}
+/** Describes a connection or request per seconds for a technical blob */
+export interface CommercialCatalogBlobContentTechnicalPerSeconds {
+    total?: number;
+    unit?: string | null;
+}
+/** Describes storage information */
+export interface CommercialCatalogBlobContentTechnicalStorage {
+    disks?: CommercialCatalogBlobContentTechnicalDisk[];
+    raid?: string | null;
+}
+/** Describes throughput information */
+export interface CommercialCatalogBlobContentTechnicalThroughput {
+    level?: number;
+}
+/** Describes volume information */
+export interface CommercialCatalogBlobContentTechnicalVolume {
+    capacity?: CommercialCatalogBlobContentTechnicalVolumeCapacity;
+    iops?: CommercialCatalogBlobContentTechnicalVolumeIops;
+}
+/** Describes volume capacity */
+export interface CommercialCatalogBlobContentTechnicalVolumeCapacity {
+    max?: number;
+}
+/** Describes volume IOPS information */
+export interface CommercialCatalogBlobContentTechnicalVolumeIops {
+    guaranteed?: boolean;
+    level?: number;
+    max?: number | null;
+    maxUnit?: string | null;
+    unit?: string | null;
+}
+/** Identifies the catalog that generated an offer */
+export interface CommercialCatalogCatalog {
+    id?: number;
+    name?: string;
+}
+/** Product sold by the offer it is attached to */
+export interface CommercialCatalogCommercialProduct {
+    code?: string;
+    descriptions?: CommercialCatalogDescription[];
+}
+/** Defines the applicable rating values */
+export interface CommercialCatalogCommercialRatingValue {
+    invoiceLabels?: CommercialCatalogInvoiceLabel[];
+    ratingValue?: CommercialCatalogRatingValue;
+}
+/** Describes offers composition */
+export interface CommercialCatalogCompositeOfferCommercialOffer {
+    commercialOffer?: string;
+    max?: number | null;
+    min?: number;
+}
+/** Currency code following ISO4217 format */
+export type CommercialCatalogCurrencyCodeEnum = "AUD" | "CAD" | "CZK" | "EUR" | "GBP" | "INR" | "LTL" | "MAD" | "PLN" | "SGD" | "TND" | "USD" | "XOF";
+/** Translated description */
+export interface CommercialCatalogDescription {
+    language?: CommonLanguageEnum;
+    longLabel?: string;
+    shortLabel?: string;
+}
+/** Describes engagement information */
+export interface CommercialCatalogEngagement {
+    autoReactivation?: boolean;
+    validDuration?: string;
+}
+/** Translated invoice label */
+export interface CommercialCatalogInvoiceLabel {
+    label?: string;
+    language?: CommonLanguageEnum;
+}
+/** Describes legacy information, used for transition between offer models */
+export interface CommercialCatalogLegacy {
+    blobs?: CommercialCatalogBlob | null;
+    catalog?: CommercialCatalogCatalog | null;
+    plan?: string;
+}
+/** Merchants where offers are available */
+export type CommercialCatalogMerchantEnum = "ASIA" | "AU" | "CA" | "DE" | "ES" | "FR" | "GB" | "IE" | "IN" | "IT" | "MA" | "NL" | "PL" | "PT" | "QC" | "SG" | "SN" | "TN" | "US" | "WE" | "WS";
+/** Defines a commercial catalog offer */
+export interface CommercialCatalogOffer {
+    code?: string;
+    commercialRatingValues?: CommercialCatalogCommercialRatingValue[];
+    descriptions?: CommercialCatalogDescription[];
+    engagements?: CommercialCatalogEngagement[];
+    id?: string;
+    legacy?: CommercialCatalogLegacy | null;
+    nature?: CommercialCatalogOfferNatureEnum;
+    offers?: CommercialCatalogCompositeOfferCommercialOffer[] | null;
+    product?: CommercialCatalogOfferCommercialProduct | null;
+    technicalRequirements?: CommercialCatalogTechnicalRequirement[];
+    type?: CommercialCatalogOfferTypeEnum;
+    validity?: CommercialCatalogValidity;
+    version?: number;
+}
+/** Object to link a commercial product to an commercial offer */
+export interface CommercialCatalogOfferCommercialProduct {
+    commercialProduct?: CommercialCatalogCommercialProduct;
+    max?: number | null;
+    min?: number;
+}
+/** Nature of a commercial catalog offer. It represents the commercial purpose of the offer. REGULAR represents an offer with standard pricing on product consumption. BILLING_PLAN represents an offer which allows savings on product consumption. STRUCTURAL represents an offer to hold a list of offers and information to share across them, which can't be purchased by itself. */
+export type CommercialCatalogOfferNatureEnum = "BILLING_PLAN" | "PACK" | "REGULAR" | "STRUCTURAL";
+/** Offer state. DEPRECATED means that offer is not sold anymore but services are still active */
+export type CommercialCatalogOfferStateEnum = "ACTIVE" | "DEPRECATED";
+/** Type of a commercial catalog offer. An atomic offer is a basic commercial offer (e.g.: C3-8 instance offer with 1 month commitment). A composite offer is a kind of offer composed by multiple atomic offers. */
+export type CommercialCatalogOfferTypeEnum = "ATOMIC" | "COMPOSITE";
+/** Price to apply on billing computation */
+export interface CommercialCatalogPrice {
+    amount?: number;
+    currencyCode?: CommercialCatalogCurrencyCodeEnum;
+}
+/** Price or percentage to apply */
+export interface CommercialCatalogRatingValue {
+    prices?: CommercialCatalogPrice[] | null;
+    type?: CommercialCatalogRatingValueTypeEnum;
+}
+/** Rating value type */
+export type CommercialCatalogRatingValueTypeEnum = "PRICE";
+/** Technical requirement of the product linked to the offer */
+export interface CommercialCatalogTechnicalRequirement {
+    default?: string | null;
+    name?: string;
+    values?: string[] | null;
+}
+/** Describes offer validity */
+export interface CommercialCatalogValidity {
+    eolDate?: string | null;
+    eosDate?: string | null;
+    startDate?: string;
+}
+/** List of all values to define a language */
+export type CommonLanguageEnum = "cs_CZ" | "de_DE" | "en_AS" | "en_AU" | "en_CA" | "en_GB" | "en_IE" | "en_IN" | "en_SG" | "en_US" | "en_WW" | "es_ES" | "es_SA" | "fi_FI" | "fr_CA" | "fr_FR" | "fr_MA" | "fr_SN" | "fr_TN" | "it_IT" | "lt_LT" | "nl_NL" | "pl_PL" | "pt_PT";
+//# sourceMappingURL=types.d.ts.map

@@ -1,0 +1,30 @@
+/** List of all values to define a language */
+export type CommonLanguageEnum = "cs_CZ" | "de_DE" | "en_AS" | "en_AU" | "en_CA" | "en_GB" | "en_IE" | "en_IN" | "en_SG" | "en_US" | "en_WW" | "es_ES" | "es_SA" | "fi_FI" | "fr_CA" | "fr_FR" | "fr_MA" | "fr_SN" | "fr_TN" | "it_IT" | "lt_LT" | "nl_NL" | "pl_PL" | "pt_PT";
+/** Region and its availability zones */
+export interface LocationLocation {
+    availabilityZoneDatacenters?: Record<string, string[]> | null;
+    availabilityZones?: string[] | null;
+    cardinalPoint?: string;
+    cityCode?: string;
+    cityLatitude?: number;
+    cityLongitude?: number;
+    cityName?: string;
+    code?: string;
+    countryCode?: string;
+    countryName?: string;
+    geographyCode?: string;
+    geographyName?: string;
+    location?: string;
+    name?: string;
+    openingYear?: number;
+    services?: LocationServicesEnum[];
+    specificType?: LocationSpecificTypeEnum;
+    type?: LocationTypeEnum;
+}
+/** Services available in the region */
+export type LocationServicesEnum = "OCC" | "PEERING";
+/** Typology of the region for non-standard types */
+export type LocationSpecificTypeEnum = "BACKUP" | "LZ" | "SNC" | "STANDARD";
+/** Typology of the region */
+export type LocationTypeEnum = "LOCAL-ZONE" | "REGION-1-AZ" | "REGION-3-AZ";
+//# sourceMappingURL=types.d.ts.map

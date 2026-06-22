@@ -1,0 +1,383 @@
+/** Log kind */
+export interface DbaasLogsLogKind {
+    additionalReturnedFields?: string[];
+    createdAt?: string;
+    displayName?: string;
+    kindId?: string;
+    name?: string;
+    updatedAt?: string;
+}
+/** Log subscription */
+export interface DbaasLogsLogSubscription {
+    createdAt?: string;
+    kind?: string;
+    resource?: DbaasLogsLogSubscriptionResource;
+    serviceName?: string;
+    streamId?: string;
+    subscriptionId?: string;
+    updatedAt?: string;
+}
+/** Log subscription creation payload */
+export interface DbaasLogsLogSubscriptionCreation {
+    kind: string;
+    streamId: string;
+}
+/** Log subscription resource */
+export interface DbaasLogsLogSubscriptionResource {
+    name?: string;
+    type?: string;
+}
+/** Asynchronous operation after subscribing or unsubscribing to a resource logs */
+export interface DbaasLogsLogSubscriptionResponse {
+    operationId?: string;
+    serviceName?: string;
+}
+/** Log temporary URL creation payload */
+export interface DbaasLogsLogUrlCreation {
+    kind: string;
+}
+/** Temporary url information */
+export interface DbaasLogsTemporaryLogsLink {
+    expirationDate?: string;
+    url?: string;
+}
+/** Resource tag filter */
+export interface IamResourceTagFilter {
+    operator?: IamResourceTagFilterOperatorEnum | null;
+    value?: string;
+}
+/** Operator that can be used in order to filter resources tags */
+export type IamResourceTagFilterOperatorEnum = "EQ" | "EXISTS" | "ILIKE" | "LIKE" | "NEQ" | "NEXISTS";
+/** IAM resource metadata embedded in services models */
+export interface IamResourceMetadata {
+    displayName?: string | null;
+    id?: string;
+    state?: IamResourceMetadataStateEnum | null;
+    tags?: Record<string, string> | null;
+    urn?: string;
+}
+/** Resource state */
+export type IamResourceMetadataStateEnum = "EXPIRED" | "IN_CREATION" | "OK" | "SUSPENDED";
+/** Typology of the region */
+export type LocationTypeEnum = "LOCAL-ZONE" | "REGION-1-AZ" | "REGION-3-AZ";
+/** Certification level */
+export type ObservabilityCertificationLevelEnum = "HDS" | "PCI_DSS" | "SNC" | "SOC2" | "STANDARD" | "TRUSTED_ZONE";
+/** Valid type of certificate */
+export type OkmsCertificateTypeEnum = "ECDSA" | "RSA";
+/** Request an OKMS service access credential */
+export interface OkmsCredentialCreation {
+    certificateType?: OkmsCertificateTypeEnum | null;
+    csr?: string | null;
+    description?: string | null;
+    identityURNs: string[];
+    name: string;
+    validity?: number | null;
+}
+/** An OKMS service access credential */
+export interface OkmsCredentialCreationResponse {
+    certificateType?: OkmsCertificateTypeEnum;
+    createdAt?: string;
+    description?: string | null;
+    expiredAt?: string;
+    fromCSR?: boolean;
+    id?: string;
+    identityURNs?: string[];
+    name?: string;
+    privateKeyPEM?: string | null;
+    status?: OkmsCredentialStatusEnum;
+}
+/** An OKMS service access credential */
+export interface OkmsCredentialGetResponse {
+    certificatePEM?: string | null;
+    certificateType?: OkmsCertificateTypeEnum;
+    createdAt?: string;
+    description?: string | null;
+    expiredAt?: string;
+    fromCSR?: boolean;
+    id?: string;
+    identityURNs?: string[];
+    name?: string;
+    status?: OkmsCredentialStatusEnum;
+}
+/** Valid states of credential */
+export type OkmsCredentialStatusEnum = "CREATING" | "DELETING" | "ERROR" | "EXPIRED" | "READY";
+/** Key algorithm */
+export type OkmsKeyAlgEnum = "ES256" | "ES384" | "ES512" | "PS256" | "PS384" | "PS512" | "RS256" | "RS384" | "RS512";
+/** Key curve */
+export type OkmsKeyCurveEnum = "P-256" | "P-384" | "P-521";
+/** Key deactivation reason */
+export type OkmsKeyDeactivationReasonEnum = "AFFILIATION_CHANGED" | "CA_COMPROMISE" | "CESSATION_OF_OPERATION" | "KEY_COMPROMISE" | "PRIVILEGE_WITHDRAWN" | "SUPERSEDED" | "UNSPECIFIED";
+/** Key format */
+export type OkmsKeyFormatEnum = "JWK" | "PEM";
+/** Key operations */
+export type OkmsKeyOpsEnum = "decrypt" | "encrypt" | "sign" | "unwrapKey" | "verify" | "wrapKey";
+/** The size of a key */
+export type OkmsKeySizeEnum = 128 | 192 | 256 | 384 | 521 | 2048 | 3072 | 4096;
+/** The state of a key */
+export type OkmsKeyStateEnum = "ACTIVE" | "ALL" | "COMPROMISED" | "DEACTIVATED" | "DESTROYED" | "DESTROYED_COMPROMISED" | "PRE_ACTIVE";
+/** The desired state of a key */
+export type OkmsKeyStateUpdateEnum = "ACTIVE" | "COMPROMISED" | "DEACTIVATED";
+/** Cryptographic algorithm family used with the key */
+export type OkmsKeyTypeEnum = "EC" | "RSA" | "oct";
+/** Key usage */
+export type OkmsKeyUseEnum = "enc" | "sig";
+/** Key protection level */
+export type OkmsProtectionLevelEnum = "HSM" | "MANAGED_HSM" | "SOFTWARE";
+/** Region information */
+export interface OkmsReferenceRegion {
+    certifications?: ObservabilityCertificationLevelEnum[];
+    id?: OkmsRegionEnum;
+    kmipEndpoint?: string;
+    restEndpoint?: string;
+    type?: LocationTypeEnum;
+}
+/** Secret engine default configuration */
+export interface OkmsReferenceSecretConfigResponse {
+    casRequired?: boolean;
+    maxVersions?: number;
+}
+/** Service key curve reference */
+export interface OkmsReferenceServiceKeyCurve {
+    default?: boolean;
+    value?: OkmsKeyCurveEnum;
+}
+/** Service key operations reference */
+export interface OkmsReferenceServiceKeyOperations {
+    default?: boolean;
+    value?: OkmsKeyOpsEnum[];
+}
+/** Service key protection level reference */
+export interface OkmsReferenceServiceKeyProtectionLevel {
+    default?: boolean;
+    value?: OkmsProtectionLevelEnum;
+}
+/** Service key type, size, curve, operations and protectionLevel combination */
+export interface OkmsReferenceServiceKeyResponse {
+    curves?: OkmsReferenceServiceKeyCurve[];
+    default?: boolean;
+    operations?: OkmsReferenceServiceKeyOperations[];
+    protectionLevel?: OkmsReferenceServiceKeyProtectionLevel[];
+    sizes?: OkmsReferenceServiceKeySize[];
+    type?: OkmsKeyTypeEnum;
+}
+/** Service key size reference */
+export interface OkmsReferenceServiceKeySize {
+    default?: boolean;
+    value?: OkmsKeySizeEnum;
+}
+/** Region */
+export type OkmsRegionEnum = "ap-south-mum" | "ap-southeast-sgp" | "ap-southeast-syd" | "ca-east-bhs" | "ca-east-tor" | "eu-central-waw" | "eu-south-mil" | "eu-west-eri" | "eu-west-gra" | "eu-west-lim" | "eu-west-par" | "eu-west-rbx" | "eu-west-sbg";
+/** An OKMS service */
+export interface OkmsResourceResponse {
+    id?: string;
+    kmipEndpoint?: string;
+    kmipObjectCount?: number;
+    kmipRsaEndpoint?: string | null;
+    pciDssEnabled?: boolean;
+    pciDssEnabledAt?: string | null;
+    publicCA?: string | null;
+    publicRsaCA?: string | null;
+    region?: OkmsRegionEnum;
+    restEndpoint?: string;
+    secretCount?: number;
+    secretVersionCount?: number;
+    serviceKeyCount?: number;
+    swaggerEndpoint?: string;
+}
+/** An OKMS service */
+export interface OkmsResourceResponseWithIAM {
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    kmipEndpoint?: string;
+    kmipObjectCount?: number;
+    kmipRsaEndpoint?: string | null;
+    pciDssEnabled?: boolean;
+    pciDssEnabledAt?: string | null;
+    publicCA?: string | null;
+    publicRsaCA?: string | null;
+    region?: OkmsRegionEnum;
+    restEndpoint?: string;
+    secretCount?: number;
+    secretVersionCount?: number;
+    serviceKeyCount?: number;
+    swaggerEndpoint?: string;
+}
+/** Request body for updating an OKMS service */
+export interface OkmsResourceUpdateRequest {
+    pciDssEnabled?: boolean;
+}
+/** Create an OKMS secret */
+export interface OkmsSecretCreation {
+    metadata?: OkmsSecretMetadataRequest | null;
+    path: string;
+    version: OkmsSecretVersionCreation;
+}
+/** An OKMS secret */
+export interface OkmsSecretGetResponse {
+    metadata?: OkmsSecretMetadata;
+    path?: string;
+    version?: OkmsSecretVersion | null;
+}
+/** An OKMS secret */
+export interface OkmsSecretGetResponseWithIAM {
+    iam?: IamResourceMetadata | null;
+    metadata?: OkmsSecretMetadata;
+    path?: string;
+    version?: OkmsSecretVersion | null;
+}
+/** Secret metadata */
+export interface OkmsSecretMetadata {
+    casRequired?: boolean | null;
+    createdAt?: string;
+    currentVersion?: number | null;
+    customMetadata?: Record<string, string> | null;
+    deactivateVersionAfter?: string | null;
+    maxVersions?: number | null;
+    oldestVersion?: number;
+    updatedAt?: string | null;
+}
+/** Create a secret metadata */
+export interface OkmsSecretMetadataRequest {
+    casRequired?: boolean | null;
+    customMetadata?: Record<string, string> | null;
+    deactivateVersionAfter?: string | null;
+    maxVersions?: number | null;
+}
+/** An OKMS secret */
+export interface OkmsSecretPostResponse {
+    metadata?: OkmsSecretMetadata;
+    path?: string;
+}
+/** Update an OKMS secret */
+export interface OkmsSecretUpdateRequest {
+    metadata?: OkmsSecretMetadataRequest | null;
+    version?: OkmsSecretVersionCreation | null;
+}
+/** An OKMS secret version */
+export interface OkmsSecretVersion {
+    createdAt?: string;
+    data?: unknown;
+    deactivatedAt?: string | null;
+    id?: number;
+    state?: OkmsSecretStateEnum;
+}
+/** Create an OKMS secret version */
+export interface OkmsSecretVersionCreation {
+    data: unknown;
+}
+/** Update an OKMS secret */
+export interface OkmsSecretVersionUpdateRequest {
+    state: OkmsSecretStateEnum;
+}
+/** An OKMS secret version */
+export interface OkmsSecretVersionUpdateResponse {
+    createdAt?: string;
+    deactivatedAt?: string | null;
+    id?: number;
+    state?: OkmsSecretStateEnum;
+}
+/** Secrets configuration settings */
+export interface OkmsSecretConfigResponse {
+    casRequired?: boolean;
+    deactivateVersionAfter?: string;
+    maxVersions?: number;
+}
+/** Secrets configuration settings */
+export interface OkmsSecretConfigUpdateRequest {
+    casRequired?: boolean | null;
+    deactivateVersionAfter?: string | null;
+    maxVersions?: number | null;
+}
+/** State of the secret version */
+export type OkmsSecretStateEnum = "ACTIVE" | "DEACTIVATED" | "DELETED";
+/** Create an OKMS service key */
+export interface OkmsServiceKeyCreation {
+    context?: string | null;
+    curve?: OkmsKeyCurveEnum | null;
+    keys?: OkmsServiceKeyJsonWebKeyRequest[] | null;
+    name?: string;
+    operations?: OkmsKeyOpsEnum[] | null;
+    protectionLevel?: OkmsProtectionLevelEnum | null;
+    size?: OkmsKeySizeEnum | null;
+    type?: OkmsKeyTypeEnum | null;
+}
+/** A JSON Web Key (JWK) object */
+export interface OkmsServiceKeyJsonWebKeyRequest {
+    alg?: OkmsKeyAlgEnum | null;
+    crv?: OkmsKeyCurveEnum | null;
+    d?: string | null;
+    dp?: string | null;
+    dq?: string | null;
+    e?: string | null;
+    k?: string | null;
+    key_ops?: OkmsKeyOpsEnum[] | null;
+    kid?: string | null;
+    kty: OkmsKeyTypeEnum;
+    n?: string | null;
+    p?: string | null;
+    q?: string | null;
+    qi?: string | null;
+    use?: OkmsKeyUseEnum | null;
+    x?: string | null;
+    y?: string | null;
+}
+/** A JSON Web Key (JWK) object */
+export interface OkmsServiceKeyJsonWebKeyResponse {
+    alg?: OkmsKeyAlgEnum | null;
+    crv?: OkmsKeyCurveEnum | null;
+    d?: string | null;
+    dp?: string | null;
+    dq?: string | null;
+    e?: string | null;
+    k?: string | null;
+    key_ops?: OkmsKeyOpsEnum[] | null;
+    kid?: string;
+    kty?: OkmsKeyTypeEnum;
+    n?: string | null;
+    p?: string | null;
+    q?: string | null;
+    qi?: string | null;
+    use?: OkmsKeyUseEnum | null;
+    x?: string | null;
+    y?: string | null;
+}
+/** A PEM (Privacy-Enhanced Mail) object */
+export interface OkmsServiceKeyPEM {
+    pem?: string;
+}
+/** An OKMS service key */
+export interface OkmsServiceKeyResponse {
+    createdAt?: string;
+    curve?: OkmsKeyCurveEnum | null;
+    id?: string;
+    keys?: OkmsServiceKeyJsonWebKeyResponse[] | null;
+    keysPEM?: OkmsServiceKeyPEM[] | null;
+    name?: string;
+    operations?: OkmsKeyOpsEnum[] | null;
+    protectionLevel?: OkmsProtectionLevelEnum;
+    size?: OkmsKeySizeEnum | null;
+    state?: OkmsKeyStateEnum;
+    type?: OkmsKeyTypeEnum;
+}
+/** An OKMS service key */
+export interface OkmsServiceKeyResponseWithIAM {
+    createdAt?: string;
+    curve?: OkmsKeyCurveEnum | null;
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    keys?: OkmsServiceKeyJsonWebKeyResponse[] | null;
+    keysPEM?: OkmsServiceKeyPEM[] | null;
+    name?: string;
+    operations?: OkmsKeyOpsEnum[] | null;
+    protectionLevel?: OkmsProtectionLevelEnum;
+    size?: OkmsKeySizeEnum | null;
+    state?: OkmsKeyStateEnum;
+    type?: OkmsKeyTypeEnum;
+}
+/** Update an OKMS service key */
+export interface OkmsServiceKeyUpdate {
+    deactivationReason?: OkmsKeyDeactivationReasonEnum | null;
+    name?: string | null;
+    state?: OkmsKeyStateUpdateEnum | null;
+}
+//# sourceMappingURL=types.d.ts.map

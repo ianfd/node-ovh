@@ -1,0 +1,27 @@
+/** Representation of a Region */
+export type NetworkDefenseRegionEnum = "CA" | "EU" | "US";
+/** DDoS mitigation event. It typically starts when the DDoS detection system sends an alert, and the traffic of the subnet is routed through the mitigation system (VAC) */
+export interface NetworkDefenseVacEvent {
+    endedAt?: string | null;
+    startedAt?: string;
+    subnet?: string;
+    vectors?: NetworkDefenseVectorsEnum[];
+}
+/** List of DDoS mitigation events. */
+export interface NetworkDefenseVacEventsResponse {
+    events?: NetworkDefenseVacEvent[] | null;
+}
+/** DDoS mitigation traffic statistics. All arrays have the same length. The Nth item of the dropped or passed arrays matches the Nth timestamp */
+export interface NetworkDefenseVacTrafficResponse {
+    bps?: NetworkDefenseVacTrafficResponseData;
+    pps?: NetworkDefenseVacTrafficResponseData;
+    timestamps?: string[];
+}
+/** DDoS mitigation traffic statistics */
+export interface NetworkDefenseVacTrafficResponseData {
+    dropped?: string[];
+    passed?: string[];
+}
+/** Network Defense DDoS attack vectors */
+export type NetworkDefenseVectorsEnum = "CHARGEN" | "DNS" | "DNS_TO_OVH" | "FRAGMENT" | "ICMP" | "IP_NULL" | "NTP" | "OTHER" | "TCP_ACK" | "TCP_FIN" | "TCP_NULL" | "TCP_PSH" | "TCP_RST" | "TCP_SYN" | "UDP" | "VECTOR_TYPE_UNSPECIFIED";
+//# sourceMappingURL=types.d.ts.map

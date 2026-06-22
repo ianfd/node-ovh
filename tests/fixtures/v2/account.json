@@ -1,0 +1,118 @@
+{
+  "apiVersion": "1.0",
+  "apis": [
+    {
+      "path": "/account/version",
+      "operations": [
+        {
+          "apiStatus": { "description": "Alpha version", "value": "ALPHA" },
+          "httpMethod": "GET",
+          "parameters": [],
+          "responseType": "versions.version.AccountVersion",
+          "responseTypes": { "200": "versions.version.AccountVersion" },
+          "noAuthentication": false,
+          "description": "Get the current and available API versions"
+        },
+        {
+          "apiStatus": { "description": "Alpha version", "value": "ALPHA" },
+          "httpMethod": "PUT",
+          "parameters": [
+            {
+              "dataType": "versions.version.AccountVersionInput",
+              "paramType": "body",
+              "fullType": "versions.version.AccountVersionInput",
+              "required": true,
+              "description": "Request Body"
+            }
+          ],
+          "responseType": "versions.version.AccountVersion",
+          "responseTypes": { "200": "versions.version.AccountVersion" },
+          "noAuthentication": false,
+          "description": "Update the current API version"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "resourcePath": "/account",
+  "basePath": "https://api.eu.ovhcloud.com/v2",
+  "models": {
+    "versions.version.AccountVersion": {
+      "id": "AccountVersion",
+      "namespace": "versions.version",
+      "description": "API version resource",
+      "properties": {
+        "availableVersions": {
+          "type": "string[]",
+          "fullType": "string[]",
+          "canBeNull": false,
+          "readOnly": true,
+          "description": "Available API versions to transition to",
+          "required": false
+        },
+        "currentState": {
+          "type": "versions.version.AccountVersionCurrentState",
+          "fullType": "versions.version.AccountVersionCurrentState",
+          "canBeNull": false,
+          "readOnly": true,
+          "description": "Current state of the API version",
+          "required": false
+        },
+        "targetSpec": {
+          "type": "versions.version.AccountVersionTargetSpec",
+          "fullType": "versions.version.AccountVersionTargetSpec",
+          "canBeNull": false,
+          "readOnly": true,
+          "description": "Target specification for the API version",
+          "required": false
+        }
+      }
+    },
+    "versions.version.AccountVersionCurrentState": {
+      "id": "AccountVersionCurrentState",
+      "namespace": "versions.version",
+      "description": "Current state of the API version",
+      "properties": {
+        "version": {
+          "type": "string",
+          "fullType": "string",
+          "canBeNull": false,
+          "readOnly": true,
+          "description": "Currently active API version",
+          "required": false
+        }
+      }
+    },
+    "versions.version.AccountVersionInput": {
+      "id": "AccountVersionInput",
+      "namespace": "versions.version",
+      "description": "Input payload to update the API version",
+      "properties": {
+        "targetSpec": {
+          "type": "versions.version.AccountVersionTargetSpec",
+          "fullType": "versions.version.AccountVersionTargetSpec",
+          "canBeNull": false,
+          "readOnly": false,
+          "description": "Requested target specification",
+          "required": true
+        }
+      }
+    },
+    "versions.version.AccountVersionTargetSpec": {
+      "id": "AccountVersionTargetSpec",
+      "namespace": "versions.version",
+      "description": "Target specification for the API version",
+      "properties": {
+        "version": {
+          "type": "string",
+          "fullType": "string",
+          "canBeNull": false,
+          "readOnly": false,
+          "description": "API version to set as active",
+          "required": true
+        }
+      }
+    }
+  }
+}
+

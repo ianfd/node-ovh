@@ -1,0 +1,146 @@
+/** Asynchronous operation currently running */
+export interface CommonCurrentTask {
+    errors?: CommonTaskError[] | null;
+    id?: string;
+    link?: string;
+    status?: CommonCurrentTaskStatusEnum | null;
+    type?: string;
+}
+/** Current status of a task. A task in ERROR cannot be retried without your inputs. PENDING tasks will be executed as soon as possible. A RUNNING task is currently executing your original request. SCHEDULED is used for tasks that will be executed in the future */
+export type CommonCurrentTaskStatusEnum = "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Asynchronous operation */
+export interface CommonTask {
+    createdAt?: string;
+    errors?: CommonTaskError[] | null;
+    finishedAt?: string | null;
+    id?: string;
+    link?: string;
+    message?: string;
+    progress?: CommonTaskProgress[];
+    startedAt?: string | null;
+    status?: CommonTaskStatusEnum;
+    type?: string;
+    updatedAt?: string;
+}
+/** Errors that occured on the task */
+export interface CommonTaskError {
+    message?: string;
+}
+/** Detailed information about an asynchronous operation progress steps */
+export interface CommonTaskProgress {
+    name?: string;
+    status?: CommonTaskStatusEnum;
+}
+/** TaskStatusEnum */
+export type CommonTaskStatusEnum = "DONE" | "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Resource tag filter */
+export interface IamResourceTagFilter {
+    operator?: IamResourceTagFilterOperatorEnum | null;
+    value?: string;
+}
+/** Operator that can be used in order to filter resources tags */
+export type IamResourceTagFilterOperatorEnum = "EQ" | "EXISTS" | "ILIKE" | "LIKE" | "NEQ" | "NEXISTS";
+/** IAM resource metadata embedded in services models */
+export interface IamResourceMetadata {
+    displayName?: string | null;
+    id?: string;
+    state?: IamResourceMetadataStateEnum | null;
+    tags?: Record<string, string> | null;
+    urn?: string;
+}
+/** Resource state */
+export type IamResourceMetadataStateEnum = "EXPIRED" | "IN_CREATION" | "OK" | "SUSPENDED";
+/** List of managed services eligible to the requested vRack Services */
+export interface VrackServicesEligibleManagedService {
+    managedServiceType?: string;
+    managedServiceURNs?: string[];
+}
+/** Endpoint holding a managed service IP */
+export interface VrackServicesEndpoint {
+    description?: string;
+    ip?: string;
+}
+/** ProductStatusEnum */
+export type VrackServicesProductStatusEnum = "ACTIVE" | "DRAFT" | "SUSPENDED";
+/** A vRack Services compatible localization */
+export interface VrackServicesRegion {
+    name?: string;
+}
+/** It reflects the readiness of the vRack Services resource. The status `READY` indicates that the vRack Services state is stable. It guarantees that the `currentState` is fully aligned with the `targetSpec`. A new target specification request will be accepted only in this status. */
+export type VrackServicesResourceStatusEnum = "CREATING" | "DELETING" | "ERROR" | "READY" | "UPDATING";
+/** A Service Endpoint provides an access to managed services directly from one or several private IPs in the associated vRack */
+export interface VrackServicesServiceEndpoint {
+    endpoints?: VrackServicesEndpoint[];
+    managedServiceURN?: string;
+}
+/** Definition of the range dedicated to the subnet's services */
+export interface VrackServicesServiceRange {
+    cidr?: string;
+    remainingIps?: number;
+    reservedIps?: number;
+    usedIps?: number;
+}
+/** A network segment of the associated vRack. It represents an IP addressing scheme inside the private network */
+export interface VrackServicesSubnet {
+    cidr?: string;
+    displayName?: string | null;
+    serviceEndpoints?: VrackServicesServiceEndpoint[];
+    serviceRange?: VrackServicesServiceRange;
+    vlan?: number | null;
+}
+/** Target specification of a Service Endpoint. A Service Endpoint provides an access to a managed service directly from one or several private IPs in the associated vRack */
+export interface VrackServicesTargetServiceEndpoint {
+    managedServiceURN: string;
+}
+/** Target specification of the range dedicated to the subnet's services */
+export interface VrackServicesTargetServiceRange {
+    cidr: string;
+}
+/** Target specification of a subnet */
+export interface VrackServicesTargetSubnet {
+    cidr: string;
+    displayName?: string | null;
+    serviceEndpoints: VrackServicesTargetServiceEndpoint[];
+    serviceRange: VrackServicesTargetServiceRange;
+    vlan?: number | null;
+}
+/** A vRack Services */
+export interface VrackServicesVrackServices {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: VrackServicesVrackServicesCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: VrackServicesResourceStatusEnum;
+    targetSpec?: VrackServicesVrackServicesTargetSpec;
+    updatedAt?: string;
+}
+/** Current state of the vRack Services */
+export interface VrackServicesVrackServicesCurrentState {
+    productStatus?: VrackServicesProductStatusEnum;
+    region?: string;
+    subnets?: VrackServicesSubnet[];
+    vrackId?: string | null;
+}
+/** A vRack Services input payload */
+export interface VrackServicesVrackServicesInput {
+    checksum: string;
+    targetSpec: VrackServicesVrackServicesTargetSpec;
+}
+/** Target specification of the vRack Services */
+export interface VrackServicesVrackServicesTargetSpec {
+    subnets: VrackServicesTargetSubnet[];
+}
+/** A vRack Services */
+export interface VrackServicesVrackServicesWithIAM {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: VrackServicesVrackServicesCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    resourceStatus?: VrackServicesResourceStatusEnum;
+    targetSpec?: VrackServicesVrackServicesTargetSpec;
+    updatedAt?: string;
+}
+//# sourceMappingURL=types.d.ts.map

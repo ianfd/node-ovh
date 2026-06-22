@@ -1,0 +1,558 @@
+#!/usr/bin/env node
+'use strict';
+
+const fs = require('node:fs/promises');
+const path = require('node:path');
+
+const DEFAULT_SCHEMA_INDEX = 'https://api.eu.ovhcloud.com/v2';
+const DEFAULT_SCHEMA_DIR = path.join(process.cwd(), 'schemas/v2/eu');
+const DEFAULT_OUT_DIR = path.join(process.cwd(), 'src/generated/v2');
+
+const PRIMITIVES = new Map([
+  ['any', 'unknown'],
+  ['boolean', 'boolean'],
+  ['date', 'string'],
+  ['datetime', 'string'],
+  ['double', 'number'],
+  ['duration', 'string'],
+  ['float', 'number'],
+  ['integer', 'number'],
+  ['ip', 'string'],
+  ['ipBlock', 'string'],
+  ['ipv4', 'string'],
+  ['ipv4Block', 'string'],
+  ['ipv6', 'string'],
+  ['long', 'number'],
+  ['macAddress', 'string'],
+  ['password', 'string'],
+  ['string', 'string'],
+  ['text', 'string'],
+  ['uuid', 'string'],
+  ['void', 'void'],
+]);
+
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  const schemaIndexUrl = args['schema-index'] || DEFAULT_SCHEMA_INDEX;
+  const schemaDir = path.resolve(args['schema-dir'] || DEFAULT_SCHEMA_DIR);
+  const outDir = path.resolve(args.out || DEFAULT_OUT_DIR);
+  const shouldFetch = args.fetch !== false;
+
+  const index = await loadOrFetchIndex(schemaIndexUrl, schemaDir, shouldFetch);
+  const sections = [];
+
+  for (const api of index.apis || []) {
+    const fallbackSectionName = api.path.replace(/^\//, '');
+    const schema = await loadOrFetchSection(schemaIndexUrl, schemaDir, fallbackSectionName, shouldFetch);
+    sections.push(generateSection(schema, fallbackSectionName));
+  }
+
+  if (args['dry-run']) {
+    process.stdout.write(JSON.stringify(sections.map(({ sectionName, operations }) => ({
+      sectionName,
+      operations: operations.length,
+    })), null, 2));
+    process.stdout.write('\n');
+    return;
+  }
+
+  await fs.mkdir(outDir, { recursive: true });
+  for (const section of sections) {
+    const sectionDir = path.join(outDir, section.sectionName);
+    await fs.mkdir(sectionDir, { recursive: true });
+    await fs.writeFile(path.join(sectionDir, 'types.ts'), section.typesSource);
+    await fs.writeFile(path.join(sectionDir, 'client.ts'), section.clientSource);
+  }
+
+  await fs.writeFile(path.join(outDir, 'index.ts'), generateIndex(sections));
+  await fs.writeFile(path.join(outDir, 'attach.ts'), generateAttach(sections));
+}
+
+function parseArgs(argv) {
+  const args = {};
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (!arg.startsWith('--')) continue;
+
+    const key = arg.slice(2);
+    if (key === 'dry-run') {
+      args[key] = true;
+    } else if (key === 'no-fetch') {
+      args.fetch = false;
+    } else {
+      args[key] = argv[i + 1];
+      i += 1;
+    }
+  }
+  return args;
+}
+
+async function loadOrFetchIndex(schemaIndexUrl, schemaDir, shouldFetch) {
+  const cachePath = path.join(schemaDir, 'index.json');
+  if (!shouldFetch) return JSON.parse(await fs.readFile(cachePath, 'utf8'));
+
+  const index = await fetchJson(schemaIndexUrl);
+  await fs.mkdir(schemaDir, { recursive: true });
+  await fs.writeFile(cachePath, `${JSON.stringify(index, null, 2)}\n`);
+  return index;
+}
+
+async function loadOrFetchSection(schemaIndexUrl, schemaDir, sectionName, shouldFetch) {
+  const cachePath = path.join(schemaDir, `${sectionName}.json`);
+  if (!shouldFetch) return JSON.parse(await fs.readFile(cachePath, 'utf8'));
+
+  const schema = await fetchJson(`${schemaIndexUrl.replace(/\/$/, '')}/${sectionName}.json`);
+  await fs.mkdir(schemaDir, { recursive: true });
+  await fs.writeFile(cachePath, `${JSON.stringify(schema, null, 2)}\n`);
+  return schema;
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Unable to fetch ${url}: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
+}
+
+function generateSection(schema, fallbackSectionName) {
+  const sectionName = (schema.resourcePath || `/${fallbackSectionName}`).replace(/^\//, '');
+  const className = `${toPascal(sectionName)}Client`;
+  const typeNames = createTypeNameMap(schema.models || {});
+  const generatedTypeNames = new Set(Object.values(typeNames));
+  const operations = collectOperations(schema.apis || [], sectionName, typeNames);
+
+  return {
+    sectionName,
+    className,
+    operations,
+    typesSource: generateTypes(schema.models || {}, typeNames),
+    clientSource: generateClient(sectionName, className, operations, generatedTypeNames),
+  };
+}
+
+function createTypeNameMap(models) {
+  const used = new Set();
+  const names = {};
+  for (const fullName of Object.keys(models).sort()) {
+    let candidate = fullName.split('.').map(toPascal).join('');
+    if (!candidate) candidate = 'Model';
+    let unique = candidate;
+    let i = 2;
+    while (used.has(unique)) {
+      unique = `${candidate}${i}`;
+      i += 1;
+    }
+    used.add(unique);
+    names[fullName] = unique;
+  }
+  return names;
+}
+
+function generateTypes(models, typeNames) {
+  const chunks = [
+    '/* This file is generated by scripts/generate-v2-client.js. */',
+    '',
+  ];
+
+  for (const [fullName, model] of Object.entries(models).sort(([a], [b]) => a.localeCompare(b))) {
+    const typeName = typeNames[fullName];
+    chunks.push(comment(model.description));
+
+    if (Array.isArray(model.enum)) {
+      chunks.push(`export type ${typeName} = ${model.enum.map((value) => JSON.stringify(value)).join(' | ')};`);
+      chunks.push('');
+      continue;
+    }
+
+    chunks.push(`export interface ${typeName} {`);
+    for (const [propName, prop] of Object.entries(model.properties || {}).sort(([a], [b]) => a.localeCompare(b))) {
+      const optional = prop.required ? '' : '?';
+      const type = toType(prop.fullType || prop.type, typeNames, prop.canBeNull);
+      chunks.push(`  ${safeProp(propName)}${optional}: ${type};`);
+    }
+    chunks.push('}');
+    chunks.push('');
+  }
+
+  return chunks.join('\n');
+}
+
+function collectOperations(apis, sectionName, typeNames) {
+  const operations = [];
+  const methodCountsByGroup = new Map();
+
+  for (const api of apis) {
+    for (const operation of api.operations || []) {
+      const params = operation.parameters || [];
+      const pathParams = params.filter((param) => param.paramType === 'path');
+      const queryParams = params.filter((param) => param.paramType === 'query');
+      const headerParams = params.filter((param) => param.paramType === 'header' && !isPaginationHeader(param.name));
+      const bodyParam = params.find((param) => param.paramType === 'body');
+      const typedPathParams = withTsTypes(pathParams, typeNames);
+      const typedQueryParams = withTsTypes(queryParams, typeNames);
+      const typedHeaderParams = withTsTypes(headerParams, typeNames);
+      const responseType = toType(operation.responseType, typeNames, false);
+      const groupSegments = groupSegmentsForPath(api.path, sectionName);
+      const groupKey = groupSegments.join('.');
+      const methodCounts = methodCountsByGroup.get(groupKey) || new Map();
+      methodCountsByGroup.set(groupKey, methodCounts);
+      const name = uniqueName(methodCounts, operationMethodName(operation, api.path));
+      const paginated = operation.httpMethod === 'GET'
+        && responseType.endsWith('[]')
+        && params.some((param) => isPaginationHeader(param.name));
+
+      operations.push({
+        name,
+        httpMethod: operation.httpMethod,
+        path: api.path,
+        description: operation.description || api.description || '',
+        responseType,
+        itemType: responseType.endsWith('[]') ? responseType.slice(0, -2) : undefined,
+        bodyType: bodyParam ? toType(bodyParam.fullType || bodyParam.dataType, typeNames, false) : undefined,
+        paramsType: `${toPascal([...groupSegments, name].join('-'))}Params`,
+        hasRequiredParams: typedPathParams.length > 0
+          || Boolean(bodyParam?.required)
+          || typedQueryParams.some((param) => param.required)
+          || typedHeaderParams.some((param) => param.required),
+        hasParams: typedPathParams.length > 0 || typedQueryParams.length > 0 || typedHeaderParams.length > 0 || Boolean(bodyParam),
+        pathParams: typedPathParams,
+        queryParams: typedQueryParams,
+        headerParams: typedHeaderParams,
+        bodyParam,
+        paginated,
+        groupSegments,
+      });
+    }
+  }
+
+  return operations;
+}
+
+function groupSegmentsForPath(apiPath, sectionName) {
+  const parts = apiPath.split('/').filter(Boolean);
+  const withoutSection = parts[0] === sectionName ? parts.slice(1) : parts;
+  const staticSegments = withoutSection.filter((part) => !part.startsWith('{'));
+  return staticSegments.length > 0 ? staticSegments.map(toCamel) : ['root'];
+}
+
+function operationMethodName(operation, apiPath) {
+  const pathParts = apiPath.split('/').filter(Boolean);
+  const endsWithPathParam = pathParts[pathParts.length - 1]?.startsWith('{');
+  const responseType = operation.responseType || '';
+
+  if (operation.httpMethod === 'GET') {
+    return responseType.endsWith('[]') && !endsWithPathParam ? 'list' : 'get';
+  }
+  if (operation.httpMethod === 'POST') return 'create';
+  if (operation.httpMethod === 'PUT') return 'update';
+  if (operation.httpMethod === 'PATCH') return 'patch';
+  if (operation.httpMethod === 'DELETE') return 'delete';
+  return operation.httpMethod.toLowerCase();
+}
+
+function generateClient(sectionName, className, operations, generatedTypeNames) {
+  const tree = createOperationTree(operations);
+  const typeImports = new Set();
+  for (const operation of operations) {
+    collectTypeImports(operation.responseType, typeImports, generatedTypeNames);
+    if (operation.bodyType) collectTypeImports(operation.bodyType, typeImports, generatedTypeNames);
+    for (const param of [...operation.pathParams, ...operation.queryParams, ...operation.headerParams]) {
+      collectTypeImports(param.tsType, typeImports, generatedTypeNames);
+    }
+  }
+
+  const chunks = [
+    '/* This file is generated by scripts/generate-v2-client.js. */',
+    "import type { OvhClient } from '../../../core/client';",
+    "import { encodePath } from '../../../core/path';",
+    "import type { PaginatedListOptions, RequestOptions } from '../../../core/types';",
+  ];
+  if (typeImports.size > 0) {
+    chunks.push(`import type { ${Array.from(typeImports).sort().join(', ')} } from './types';`);
+  }
+  chunks.push('');
+
+  for (const operation of operations) {
+    chunks.push(generateParamsInterface(operation));
+    chunks.push('');
+  }
+
+  const classChunks = [];
+  emitClass(tree, className, classChunks);
+  chunks.push(...classChunks);
+  chunks.push(helperSource());
+
+  return chunks.join('\n');
+}
+
+function createOperationTree(operations) {
+  const root = { className: '', children: new Map(), operations: [] };
+  for (const operation of operations) {
+    let node = root;
+    const classParts = [];
+    for (const segment of operation.groupSegments) {
+      classParts.push(segment);
+      if (!node.children.has(segment)) {
+        node.children.set(segment, {
+          className: '',
+          children: new Map(),
+          operations: [],
+        });
+      }
+      node = node.children.get(segment);
+      node.className = '';
+    }
+    node.operations.push(operation);
+  }
+  return root;
+}
+
+function emitClass(node, className, chunks, prefix = []) {
+  node.className = className;
+  chunks.push(`export class ${className} {`);
+
+  for (const [segment, child] of node.children) {
+    const childClassName = `${className}${toPascal(segment)}`;
+    child.className = childClassName;
+    chunks.push(`  readonly ${safeProp(segment)}: ${childClassName};`);
+  }
+  if (node.children.size > 0) chunks.push('');
+
+  chunks.push('  constructor(private readonly client: OvhClient) {');
+  for (const [segment, child] of node.children) {
+    chunks.push(`    this.${safePropAccess(segment)} = new ${child.className}(client);`);
+  }
+  chunks.push('  }');
+  chunks.push('');
+
+  for (const operation of node.operations) {
+    chunks.push(generateMethod(operation, false));
+    if (operation.paginated) {
+      chunks.push('');
+      chunks.push(generateMethod(operation, true, 'iterate'));
+      chunks.push('');
+      chunks.push(generateMethod(operation, true, 'listAll'));
+    }
+    chunks.push('');
+  }
+
+  chunks.push('}');
+  chunks.push('');
+
+  for (const [segment, child] of node.children) {
+    emitClass(child, child.className || `${className}${toPascal(segment)}`, chunks, [...prefix, segment]);
+  }
+}
+
+function generateParamsInterface(operation) {
+  const base = operation.paginated ? 'PaginatedListOptions' : 'RequestOptions';
+  const parts = [];
+  for (const param of operation.pathParams) {
+    parts.push(`${safeProp(param.name)}: ${param.tsType};`);
+  }
+  for (const param of operation.queryParams) {
+    parts.push(`${safeProp(param.name)}${param.required ? '' : '?'}: ${param.tsType};`);
+  }
+  for (const param of operation.headerParams) {
+    parts.push(`${safeProp(param.name)}${param.required ? '' : '?'}: ${param.tsType};`);
+  }
+  if (operation.bodyParam) {
+    parts.push(`body: ${operation.bodyType};`);
+  }
+  return `export interface ${operation.paramsType} extends ${base} {\n${parts.map((part) => `  ${part}`).join('\n')}\n}`;
+}
+
+function generateMethod(operation, paginationHelper, helperName) {
+  if (paginationHelper && helperName === 'iterate') {
+    const defaultValue = operation.hasRequiredParams ? '' : ' = {}';
+    return [
+      `  /** Iterate over ${operation.description || operation.path}. */`,
+      `  iterate(params: ${operation.paramsType}${defaultValue}): AsyncGenerator<${operation.itemType}, void, void> {`,
+      `    return this.client.iterate<${operation.itemType}>(${JSON.stringify(operation.httpMethod)}, encodePath(${JSON.stringify(operation.path)}, params as any), buildRequestOptions(params as any, ${JSON.stringify(operation.queryParams.map((param) => param.name))}, ${JSON.stringify(operation.headerParams.map((param) => param.name))}));`,
+      '  }',
+    ].join('\n');
+  }
+
+  if (paginationHelper && helperName === 'listAll') {
+    const defaultValue = operation.hasRequiredParams ? '' : ' = {}';
+    return [
+      `  /** Load all pages for ${operation.description || operation.path}. */`,
+      `  listAll(params: ${operation.paramsType}${defaultValue}): Promise<${operation.itemType}[]> {`,
+      `    return this.client.listAll<${operation.itemType}>(${JSON.stringify(operation.httpMethod)}, encodePath(${JSON.stringify(operation.path)}, params as any), buildRequestOptions(params as any, ${JSON.stringify(operation.queryParams.map((param) => param.name))}, ${JSON.stringify(operation.headerParams.map((param) => param.name))}));`,
+      '  }',
+    ].join('\n');
+  }
+
+  const paramsType = operation.hasParams || operation.paginated ? operation.paramsType : 'RequestOptions';
+  const defaultValue = operation.hasRequiredParams ? '' : ' = {}';
+  return [
+    `  /** ${operation.description || operation.path} */`,
+    `  ${operation.name}(params: ${paramsType}${defaultValue}): Promise<${operation.responseType}> {`,
+    `    return this.client.request<${operation.responseType}>(${JSON.stringify(operation.httpMethod)}, encodePath(${JSON.stringify(operation.path)}, params as any), buildRequestOptions(params as any, ${JSON.stringify(operation.queryParams.map((param) => param.name))}, ${JSON.stringify(operation.headerParams.map((param) => param.name))}));`,
+    '  }',
+  ].join('\n');
+}
+
+function helperSource() {
+  return [
+    'function buildRequestOptions(params: Record<string, unknown>, queryKeys: string[], headerKeys: string[]): RequestOptions {',
+    '  const request = params as RequestOptions & { body?: unknown };',
+    '  const headers = mergeHeaders(request.headers, pickDefined(params, headerKeys));',
+    '  const pageSize = typeof params.pageSize === "number" ? params.pageSize : undefined;',
+    '  return {',
+    '    ...request,',
+    '    query: pickDefined(params, queryKeys) as any,',
+    '    headers,',
+    '    pagination: request.pagination ?? (pageSize === undefined ? undefined : { size: pageSize }),',
+    '    body: request.body,',
+    '  };',
+    '}',
+    '',
+    'function pickDefined(source: Record<string, unknown>, keys: string[]): Record<string, unknown> {',
+    '  const result: Record<string, unknown> = {};',
+    '  for (const key of keys) {',
+    '    if (source[key] !== undefined) result[key] = source[key];',
+    '  }',
+    '  return result;',
+    '}',
+    '',
+    'function mergeHeaders(base: HeadersInit | undefined, extra: Record<string, unknown>): HeadersInit | undefined {',
+    '  const headers = new Headers(base);',
+    '  for (const [key, value] of Object.entries(extra)) {',
+    '    if (value !== undefined && value !== null) headers.set(key, String(value));',
+    '  }',
+    '  return headers;',
+    '}',
+    '',
+  ].join('\n');
+}
+
+function generateIndex(sections) {
+  return `${sections
+    .map(({ sectionName, className }) => `export { ${className} } from './${sectionName}/client';`)
+    .concat(sections.map(({ sectionName }) => `export * as ${toPascal(sectionName)}Types from './${sectionName}/types';`))
+    .join('\n')}\n`;
+}
+
+function generateAttach(sections) {
+  const chunks = [
+    '/* This file is generated by scripts/generate-v2-client.js. */',
+    "import type { OvhClient } from '../../core/client';",
+  ];
+  for (const { sectionName, className } of sections) {
+    chunks.push(`import { ${className} } from './${sectionName}/client';`);
+  }
+  chunks.push('');
+  chunks.push('export interface GeneratedClients {');
+  for (const { sectionName, className } of sections) {
+    chunks.push(`  ${safeProp(sectionName)}: ${className};`);
+  }
+  chunks.push('}');
+  chunks.push('');
+  chunks.push('export function createGeneratedClients(client: OvhClient): GeneratedClients {');
+  chunks.push('  return {');
+  for (const { sectionName, className } of sections) {
+    chunks.push(`    ${safeProp(sectionName)}: new ${className}(client),`);
+  }
+  chunks.push('  };');
+  chunks.push('}');
+  chunks.push('');
+  return chunks.join('\n');
+}
+
+function uniqueName(counts, baseName) {
+  const count = counts.get(baseName) || 0;
+  counts.set(baseName, count + 1);
+  return count === 0 ? baseName : `${baseName}${count + 1}`;
+}
+
+function isPaginationHeader(name) {
+  return name === 'X-Pagination-Cursor' || name === 'X-Pagination-Size';
+}
+
+function withTsTypes(params, typeNames) {
+  return params.map((param) => ({
+    ...param,
+    tsType: toType(param.fullType || param.dataType, typeNames, false),
+  }));
+}
+
+function collectTypeImports(type, imports, generatedTypeNames) {
+  for (const match of String(type).matchAll(/\b[A-Z][A-Za-z0-9_]*\b/g)) {
+    const name = match[0];
+    if (generatedTypeNames.has(name)) {
+      imports.add(name);
+    }
+  }
+}
+
+function toType(rawType, typeNames, nullable) {
+  let result = toNonNullableType(rawType || 'void', typeNames);
+  if (nullable && result !== 'void' && result !== 'unknown') {
+    result = `${result} | null`;
+  }
+  return result;
+}
+
+function toNonNullableType(rawType, typeNames) {
+  const type = String(rawType).trim();
+
+  if (typeNames[type]) return typeNames[type];
+  if (PRIMITIVES.has(type)) return PRIMITIVES.get(type);
+  if (type.startsWith('[]')) return `${toNonNullableType(type.slice(2), typeNames)}[]`;
+  if (type.endsWith('[]')) return `${toNonNullableType(type.slice(0, -2), typeNames)}[]`;
+  if (type.includes('<') || type.includes('>')) return 'unknown';
+
+  const mapMatch = type.match(/^map\[([^\]]+)\](.+)$/);
+  if (mapMatch) {
+    return `Record<${toMapKeyType(mapMatch[1])}, ${toNonNullableType(mapMatch[2], typeNames)}>`;
+  }
+
+  return type.includes('.') ? 'unknown' : 'unknown';
+}
+
+function toMapKeyType(type) {
+  const mapped = toNonNullableType(type, {});
+  return mapped === 'number' ? 'number' : 'string';
+}
+
+function toPascal(input) {
+  const value = String(input)
+    .replace(/\{|\}/g, '')
+    .replace(/<[^>]*>/g, ' T ')
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join('');
+  return value || 'Root';
+}
+
+function toCamel(input) {
+  const pascal = toPascal(input);
+  return `${pascal.charAt(0).toLowerCase()}${pascal.slice(1)}`;
+}
+
+function safeProp(name) {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name) ? name : JSON.stringify(name);
+}
+
+function safePropAccess(name) {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name) ? name : `[${JSON.stringify(name)}]`;
+}
+
+function comment(text, indent = '') {
+  if (!text) return `${indent}/** */`;
+  return `${indent}/** ${String(text).replace(/\*\//g, '* /').replace(/\s+/g, ' ').trim()} */`;
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  generateSection,
+};

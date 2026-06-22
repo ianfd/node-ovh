@@ -1,0 +1,580 @@
+/** Asynchronous operation currently running */
+export interface CommonCurrentTask {
+    errors?: CommonTaskError[] | null;
+    id?: string;
+    link?: string;
+    status?: CommonCurrentTaskStatusEnum | null;
+    type?: string;
+}
+/** Current status of a task. A task in ERROR cannot be retried without your inputs. PENDING tasks will be executed as soon as possible. A RUNNING task is currently executing your original request. SCHEDULED is used for tasks that will be executed in the future */
+export type CommonCurrentTaskStatusEnum = "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Represents an event for an async envelope */
+export interface CommonEvent {
+    createdAt?: string;
+    kind?: string;
+    link?: string | null;
+    message?: string;
+    type?: CommonEventTypeEnum;
+}
+/** List all defined values for an event type field */
+export type CommonEventTypeEnum = "TARGET_SPEC_UPDATE" | "TASK_ERROR" | "TASK_START" | "TASK_SUCCESS";
+/** ResourceStatusEnum */
+export type CommonResourceStatusEnum = "CREATING" | "DELETING" | "ERROR" | "OUT_OF_SYNC" | "READY" | "SUSPENDED" | "UNKNOWN" | "UPDATING";
+/** Asynchronous operation */
+export interface CommonTask {
+    createdAt?: string;
+    errors?: CommonTaskError[] | null;
+    finishedAt?: string | null;
+    id?: string;
+    link?: string;
+    message?: string;
+    progress?: CommonTaskProgress[];
+    startedAt?: string | null;
+    status?: CommonTaskStatusEnum;
+    type?: string;
+    updatedAt?: string;
+}
+/** Errors that occured on the task */
+export interface CommonTaskError {
+    message?: string;
+}
+/** Detailed information about an asynchronous operation progress steps */
+export interface CommonTaskProgress {
+    name?: string;
+    status?: CommonTaskStatusEnum;
+}
+/** TaskStatusEnum */
+export type CommonTaskStatusEnum = "DONE" | "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Resource tag filter */
+export interface IamResourceTagFilter {
+    operator?: IamResourceTagFilterOperatorEnum | null;
+    value?: string;
+}
+/** Operator that can be used in order to filter resources tags */
+export type IamResourceTagFilterOperatorEnum = "EQ" | "EXISTS" | "ILIKE" | "LIKE" | "NEQ" | "NEXISTS";
+/** IAM resource metadata embedded in services models */
+export interface IamResourceMetadata {
+    displayName?: string | null;
+    id?: string;
+    state?: IamResourceMetadataStateEnum | null;
+    tags?: Record<string, string> | null;
+    urn?: string;
+}
+/** Resource state */
+export type IamResourceMetadataStateEnum = "EXPIRED" | "IN_CREATION" | "OK" | "SUSPENDED";
+/** Object representing account */
+export interface ZimbraAccountCurrentState {
+    contactInformation?: ZimbraContactInformation | null;
+    createdAt?: string;
+    description?: string | null;
+    detailedStatus?: ZimbraAccountDetailedStatus[];
+    displayName?: string | null;
+    domainId?: string;
+    email?: string;
+    firstName?: string | null;
+    hideInGal?: boolean;
+    lastConnectionAt?: string | null;
+    lastName?: string | null;
+    offer?: ZimbraOfferEnum;
+    organizationId?: string;
+    organizationLabel?: string;
+    quota?: ZimbraQuota | null;
+    quotaRefreshedAt?: string;
+    slotId?: string;
+    updatedAt?: string | null;
+}
+/** Detailed Status of an Account */
+export interface ZimbraAccountDetailedStatus {
+    details?: string;
+    link?: string | null;
+    status?: ZimbraAccountStatusEnum;
+}
+/** Object representing POST account route payload */
+export interface ZimbraAccountPostPayload {
+    targetSpec: ZimbraAccountPostTargetSpec;
+}
+/** Object representing POST account route payload */
+export interface ZimbraAccountPostTargetSpec {
+    contactInformation?: ZimbraContactInformation;
+    description?: string;
+    displayName?: string;
+    email: string;
+    firstName?: string;
+    forceChangePasswordAfterLogin?: boolean;
+    hideInGal?: boolean;
+    lastName?: string;
+    offer: ZimbraOfferEnum;
+    password: string;
+    quota?: ZimbraQuota | null;
+    slotId?: string;
+}
+/** Object representing PUT account route payload */
+export interface ZimbraAccountPutPayload {
+    checksum?: string;
+    targetSpec: ZimbraAccountPutTargetSpec;
+}
+/** Base object of the account */
+export interface ZimbraAccountPutTargetSpec {
+    contactInformation?: ZimbraContactInformation | null;
+    description?: string | null;
+    displayName?: string | null;
+    email?: string;
+    firstName?: string | null;
+    forceChangePasswordAfterLogin?: boolean;
+    hideInGal?: boolean;
+    lastName?: string | null;
+    password?: string;
+    quota?: ZimbraQuota | null;
+    quotaRefreshedAt?: string;
+}
+/** Response for a Zimbra Account */
+export interface ZimbraAccountResponse {
+    checksum?: string;
+    currentState?: ZimbraAccountCurrentState;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraAccountTargetSpec;
+}
+/** Current account status */
+export type ZimbraAccountStatusEnum = "BILLINGLOCKED" | "BLOCKEDFORSPAM";
+/** Base object of the account */
+export interface ZimbraAccountTargetSpec {
+    contactInformation?: ZimbraContactInformation | null;
+    description?: string | null;
+    displayName?: string | null;
+    email?: string;
+    firstName?: string | null;
+    hideInGal?: boolean;
+    lastName?: string | null;
+    quotaRefreshedAt?: string;
+}
+/** Object representing Alias */
+export interface ZimbraAlias {
+    alias?: ZimbraAliasSource;
+    target?: ZimbraAliasTarget;
+}
+/** Object representing Alias */
+export interface ZimbraAliasBase {
+    alias: string;
+    targetId: string;
+}
+/** Payload for creating new Zimbra alias */
+export interface ZimbraAliasPostPayload {
+    targetSpec: ZimbraAliasBase;
+}
+/** Response for get Alias */
+export interface ZimbraAliasResponse {
+    checksum?: string;
+    currentState?: ZimbraAlias;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraAliasBase;
+}
+/** Object representing an alias */
+export interface ZimbraAliasSource {
+    domainId?: string;
+    name?: string;
+    organizationId?: string;
+    organizationLabel?: string;
+}
+/** Object representing the target of an alias */
+export interface ZimbraAliasTarget {
+    domainId?: string;
+    id?: string;
+    type?: ZimbraAliasTypeEnum;
+}
+/** Type of alias target or source object */
+export type ZimbraAliasTypeEnum = "ACCOUNT" | "MAILING_LIST";
+/** Current billing status of a slot */
+export type ZimbraBillingStatusEnum = "CREATING" | "DELETED" | "DELETING" | "OK" | "REOPENING" | "SUSPENDED" | "SUSPENDING" | "UPDATING";
+/** Object representing a DNS CName entry */
+export interface ZimbraCName {
+    name?: string;
+    value?: string;
+}
+/** Object representing contact information which extends account object */
+export interface ZimbraContactInformation {
+    city?: string | null;
+    company?: string | null;
+    country?: string | null;
+    faxNumber?: string | null;
+    mobileNumber?: string | null;
+    office?: string | null;
+    phoneNumber?: string | null;
+    postcode?: string | null;
+    profession?: string | null;
+    service?: string | null;
+    street?: string | null;
+}
+/** Object representing a DKIM selector objet which is a CName entry. */
+export interface ZimbraDKIMSelectors {
+    cnames?: ZimbraCName[];
+}
+/** Object representing a DNS configuration that should be applied to verify ownership */
+export interface ZimbraDNSOwnership {
+    cname?: string | null;
+}
+/** Object representing domain */
+export interface ZimbraDomainCurrentState {
+    accountsStatistics?: ZimbraOfferStatistics[];
+    createdAt?: string;
+    expectedDNSConfig?: ZimbraExpectedDNSConfig;
+    name?: string;
+    organizationId?: string;
+    organizationLabel?: string;
+    status?: ZimbraDomainStatusEnum;
+    updatedAt?: string | null;
+}
+/** Errors of failed diagnostic */
+export interface ZimbraDomainDiagnosisError {
+    code?: ZimbraDomainDiagnosisErrorCodeEnum;
+    message?: string;
+}
+/** Status of performed diagnostic process for given domain */
+export type ZimbraDomainDiagnosisErrorCodeEnum = "BAD_CONFIGURATION" | "DOMAIN_IN_TRANSIENT_STATE" | "DOMAIN_NOT_FOUND" | "DOMAIN_NOT_VALIDATED" | "INTERNAL_ERROR";
+/** Payload for diagnosing domains */
+export interface ZimbraDomainDiagnosisPostPayload {
+    domains: string[];
+}
+/** Recommendations on how to configure a domain */
+export interface ZimbraDomainDiagnosisRecommendations {
+    expectedDNSConfig?: ZimbraExpectedDNSConfig;
+}
+/** Object representing domain */
+export interface ZimbraDomainDiagnosisResponse {
+    domainId?: string;
+    domainName?: string | null;
+    error?: ZimbraDomainDiagnosisError | null;
+    isExternal?: boolean | null;
+    recommendations?: ZimbraDomainDiagnosisRecommendations | null;
+    result?: ZimbraDomainDiagnosisResult | null;
+    status?: ZimbraDomainDiagnosisStatusEnum;
+}
+/** The result of the diagnosis */
+export interface ZimbraDomainDiagnosisResult {
+    autodiscover?: ZimbraDomainDiagnosisTestAutodiscoverResult;
+    dkim?: ZimbraDomainDiagnosisTestDKIMResult;
+    mx?: ZimbraDomainDiagnosisTestMXResult;
+    spf?: ZimbraDomainDiagnosisTestSPFResult;
+}
+/** Status of performed diagnostic process for given domain */
+export type ZimbraDomainDiagnosisStatusEnum = "ERROR" | "OK" | "PARTIAL";
+/** Details on the Autodiscover error diagnosis error */
+export interface ZimbraDomainDiagnosisTestAutodiscoverError {
+    code?: ZimbraDomainDiagnosisTestAutodiscoverErrorCodeEnum;
+    message?: string;
+}
+/** Error code of Autodiscover Diagnosis */
+export type ZimbraDomainDiagnosisTestAutodiscoverErrorCodeEnum = "INCORRECT_SRV_RECORD" | "INTERNAL_ERROR" | "MULTIPLE_SRV_RECORDS" | "NO_SRV_RECORD" | "TASK_FAILED" | "TASK_RUNNING";
+/** Autodiscover Diagnosis test result */
+export interface ZimbraDomainDiagnosisTestAutodiscoverResult {
+    errors?: ZimbraDomainDiagnosisTestAutodiscoverError[];
+    recordsFound?: string[];
+    status?: ZimbraDomainDiagnosisTestStatusEnum;
+}
+/** Details on the DKIM error diagnosis error */
+export interface ZimbraDomainDiagnosisTestDKIMError {
+    code?: ZimbraDomainDiagnosisTestDKIMErrorCodeEnum;
+    message?: string;
+}
+/** Error code of DKIM Diagnosis */
+export type ZimbraDomainDiagnosisTestDKIMErrorCodeEnum = "DKIM_DISABLED" | "INCORRECT_CNAME_RECORD" | "INTERNAL_ERROR" | "MISSING_ONE_SELECTOR" | "OVH_NOT_INCLUDED" | "TASK_FAILED" | "TASK_RUNNING";
+/** DKIM Diagnosis test result */
+export interface ZimbraDomainDiagnosisTestDKIMResult {
+    errors?: ZimbraDomainDiagnosisTestDKIMError[];
+    recordsFound?: ZimbraCName[];
+    status?: ZimbraDomainDiagnosisTestStatusEnum;
+}
+/** Details on the MX error diagnosis error */
+export interface ZimbraDomainDiagnosisTestMXError {
+    code?: ZimbraDomainDiagnosisTestMXErrorCodeEnum;
+    message?: string;
+}
+/** Error code of the MX diagnosis */
+export type ZimbraDomainDiagnosisTestMXErrorCodeEnum = "EXTERNAL_MX_RECORD" | "INTERNAL_ERROR" | "MISSING_OVH_SERVER" | "NO_MX_RECORD" | "OVH_MX_LOW_PRIORITY";
+/** MX Diagnosis test result */
+export interface ZimbraDomainDiagnosisTestMXResult {
+    errors?: ZimbraDomainDiagnosisTestMXError[];
+    recordsFound?: ZimbraMXRecord[];
+    status?: ZimbraDomainDiagnosisTestStatusEnum;
+}
+/** Details on the SPF error diagnosis error */
+export interface ZimbraDomainDiagnosisTestSPFError {
+    code?: ZimbraDomainDiagnosisTestSPFErrorCodeEnum;
+    message?: string;
+}
+/** Error code of the SPF diagnosis */
+export type ZimbraDomainDiagnosisTestSPFErrorCodeEnum = "DANGEROUS_SPF_POLICY" | "INTERNAL_ERROR" | "INVALID_SPF_RECORD" | "MISSING_OVH_SERVER" | "MISSING_SPF_POLICY" | "MULTIPLE_SPF_RECORDS" | "NOT_RECOMMENDED_SPF_POLICY" | "NO_SPF_RECORD";
+/** SPF Diagnosis test result */
+export interface ZimbraDomainDiagnosisTestSPFResult {
+    errors?: ZimbraDomainDiagnosisTestSPFError[];
+    recordsFound?: string[];
+    status?: ZimbraDomainDiagnosisTestStatusEnum;
+}
+/** Status of performed diagnostic process for given test */
+export type ZimbraDomainDiagnosisTestStatusEnum = "ERROR" | "OK" | "WARNING";
+/** Object representing POST domain route payload */
+export interface ZimbraDomainPostPayload {
+    targetSpec: ZimbraDomainPostTargetSpec;
+}
+/** Object representing POST domain payload */
+export interface ZimbraDomainPostTargetSpec {
+    autoConfigureAutodiscover?: boolean;
+    autoConfigureDKIM: boolean;
+    autoConfigureMX: boolean;
+    autoConfigureSPF: boolean;
+    name: string;
+    organizationId: string;
+}
+/** Object representing PUT domain route payload */
+export interface ZimbraDomainPutPayload {
+    checksum?: string;
+    targetSpec: ZimbraDomainPutTargetSpec;
+}
+/** target spec for PUT payload on domain */
+export interface ZimbraDomainPutTargetSpec {
+    dkimEnabled?: boolean;
+    organizationId?: string;
+}
+/** Response for get Domain */
+export interface ZimbraDomainResponse {
+    checksum?: string;
+    currentState?: ZimbraDomainCurrentState;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraDomainResponseTargetSpec;
+}
+/** Target spec property for domain responses */
+export interface ZimbraDomainResponseTargetSpec {
+    dkimEnabled?: boolean;
+    organizationId?: string;
+}
+/** Current domain status */
+export type ZimbraDomainStatusEnum = "READY";
+/** Object representing a DNS configuration that should be applied */
+export interface ZimbraExpectedDNSConfig {
+    autodiscover?: string;
+    dkim?: ZimbraDKIMSelectors;
+    mx?: ZimbraMXRecord[];
+    ownership?: ZimbraDNSOwnership;
+    spf?: string;
+}
+/** Object representing mailing list */
+export interface ZimbraMailingList {
+    defaultReplyTo?: string;
+    email?: string;
+    language?: string;
+    members?: string[];
+    moderationOption?: string;
+    organizationId?: string;
+    organizationLabel?: string;
+    owner?: string;
+}
+/** Base object of a mailing list */
+export interface ZimbraMailingListBase {
+    defaultReplyTo?: string;
+    email?: string;
+    language?: string;
+    members?: string[];
+    moderationOption?: string;
+    organizationId?: string;
+    owner?: string;
+}
+/** Object representing POST mailing list route payload */
+export interface ZimbraMailingListPostPayload {
+    targetSpec: ZimbraMailingListBase;
+}
+/** Object representing PUT mailing list route payload */
+export interface ZimbraMailingListPutPayload {
+    checksum?: string;
+    targetSpec?: ZimbraMailingListBase;
+}
+/** Response for get mailing list */
+export interface ZimbraMailingListResponse {
+    checksum?: string;
+    currentState?: ZimbraMailingList;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraMailingList;
+}
+/** Object representing an MX record */
+export interface ZimbraMXRecord {
+    priority?: number;
+    target?: string;
+}
+/** Commercial name of the offer */
+export type ZimbraOfferEnum = "PRO" | "STARTER";
+/** Statistics per offer */
+export interface ZimbraOfferStatistics {
+    availableAccountsCount?: number;
+    configuredAccountsCount?: number;
+    offer?: ZimbraOfferEnum;
+}
+/** Object representing organization */
+export interface ZimbraOrganizationCurrentState {
+    accountsStatistics?: ZimbraOfferStatistics[];
+    createdAt?: string;
+    description?: string | null;
+    label?: string;
+    name?: string;
+    storageConsumed?: number;
+    updatedAt?: string | null;
+}
+/** Object representing POST organization route payload */
+export interface ZimbraOrganizationPostPayload {
+    targetSpec: ZimbraOrganizationPostTargetSpec;
+}
+/** Object representing organization */
+export interface ZimbraOrganizationPostTargetSpec {
+    description?: string | null;
+    label: string;
+    name: string;
+}
+/** Object representing PUT account route payload */
+export interface ZimbraOrganizationPutPayload {
+    checksum?: string;
+    targetSpec: ZimbraOrganizationPutTargetSpec;
+}
+/** Object representing organization */
+export interface ZimbraOrganizationPutTargetSpec {
+    description?: string | null;
+    label?: string;
+    name?: string;
+}
+/** Response for get organization */
+export interface ZimbraOrganizationResponse {
+    checksum?: string;
+    currentState?: ZimbraOrganizationCurrentState;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraOrganizationPutTargetSpec;
+}
+/** Object representing platform */
+export interface ZimbraPlatformCurrentState {
+    accountsStatistics?: ZimbraOfferStatistics[];
+    description?: string;
+    name?: string;
+    numberOfOrganizations?: number;
+    quota?: number;
+}
+/** Object representing POST platform route payload */
+export interface ZimbraPlatformPostPayload {
+    targetSpec: ZimbraPlatformPostTargetSpec;
+}
+/** Object representing platform */
+export interface ZimbraPlatformPostTargetSpec {
+    description: string;
+    name: string;
+}
+/** Object representing Put platform route payload */
+export interface ZimbraPlatformPutPayload {
+    checksum?: string;
+    targetSpec: ZimbraPlatformPutTargetSpec;
+}
+/** Object representing platform */
+export interface ZimbraPlatformPutTargetSpec {
+    description?: string;
+    name?: string;
+}
+/** Response for get platform */
+export interface ZimbraPlatformResponse {
+    checksum?: string;
+    currentState?: ZimbraPlatformCurrentState;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraPlatformPutTargetSpec;
+}
+/** Response for get platform */
+export interface ZimbraPlatformResponseWithIAM {
+    checksum?: string;
+    currentState?: ZimbraPlatformCurrentState;
+    currentTasks?: CommonCurrentTask[];
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraPlatformPutTargetSpec;
+}
+/** Object representing project */
+export interface ZimbraProject {
+    description?: string;
+    name?: string;
+    numberOfPlatforms?: number;
+    totalStorage?: number;
+}
+/** Response for get project */
+export interface ZimbraProjectResponse {
+    checksum?: string;
+    currentState?: ZimbraProject;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraProject;
+}
+/** Response for get project */
+export interface ZimbraProjectResponseWithIAM {
+    checksum?: string;
+    currentState?: ZimbraProject;
+    currentTasks?: CommonCurrentTask[];
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraProject;
+}
+/** Number representation of account capacity */
+export interface ZimbraQuota {
+    available?: number;
+    used?: number;
+}
+/** Object representing Redirection */
+export interface ZimbraRedirection {
+    createdAt?: string;
+    destination?: string;
+    domainId?: string;
+    organizationId?: string;
+    organizationLabel?: string;
+    source?: string;
+    updatedAt?: string | null;
+}
+/** Object representing Redirection */
+export interface ZimbraRedirectionBase {
+    destination: string;
+    source: string;
+}
+/** Payload for creating new Zimbra Redirection */
+export interface ZimbraRedirectionPostPayload {
+    targetSpec: ZimbraRedirectionBase;
+}
+/** Response for get redirection */
+export interface ZimbraRedirectionResponse {
+    checksum?: string;
+    currentState?: ZimbraRedirection;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: ZimbraRedirectionBase;
+}
+/** Object representing slot */
+export interface ZimbraSlotCurrentState {
+    accountId?: string | null;
+    billingStatus?: ZimbraBillingStatusEnum;
+    createdAt?: string;
+    domainPromotionLink?: string | null;
+    email?: string | null;
+    offer?: ZimbraOfferEnum;
+    platformId?: string;
+}
+/** Response for a Zimbra Slot */
+export interface ZimbraSlotResponse {
+    checksum?: string;
+    currentState?: ZimbraSlotCurrentState;
+    currentTasks?: CommonCurrentTask[];
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+}
+//# sourceMappingURL=types.d.ts.map

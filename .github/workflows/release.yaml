@@ -14,18 +14,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
       - name: Restore/create node_modules cache
         uses: actions/cache@v4
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-${{ hashFiles('bun.lock') }}
       - name: Install
-        run: npm install
+        run: bun install --frozen-lockfile
       - name: Tag
         run: |
           git config user.name "GitHub action"
           git config user.email "actions@users.noreply.github.com"
-          npm run release
+          bun run release
           git push --follow-tags origin master
       - name: version
         run: echo "::set-output name=version::$(node -e "console.log(require('./package.json').version);")"

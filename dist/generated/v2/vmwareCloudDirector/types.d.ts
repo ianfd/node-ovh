@@ -1,0 +1,353 @@
+/** Asynchronous operation currently running */
+export interface CommonCurrentTask {
+    errors?: CommonTaskError[] | null;
+    id?: string;
+    link?: string;
+    status?: CommonCurrentTaskStatusEnum | null;
+    type?: string;
+}
+/** Current status of a task. A task in ERROR cannot be retried without your inputs. PENDING tasks will be executed as soon as possible. A RUNNING task is currently executing your original request. SCHEDULED is used for tasks that will be executed in the future */
+export type CommonCurrentTaskStatusEnum = "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Represents an event for an async envelope */
+export interface CommonEvent {
+    createdAt?: string;
+    kind?: string;
+    link?: string | null;
+    message?: string;
+    type?: CommonEventTypeEnum;
+}
+/** List all defined values for an event type field */
+export type CommonEventTypeEnum = "TARGET_SPEC_UPDATE" | "TASK_ERROR" | "TASK_START" | "TASK_SUCCESS";
+/** ResourceStatusEnum */
+export type CommonResourceStatusEnum = "CREATING" | "DELETING" | "ERROR" | "OUT_OF_SYNC" | "READY" | "SUSPENDED" | "UNKNOWN" | "UPDATING";
+/** Asynchronous operation */
+export interface CommonTask {
+    createdAt?: string;
+    errors?: CommonTaskError[] | null;
+    finishedAt?: string | null;
+    id?: string;
+    link?: string;
+    message?: string;
+    progress?: CommonTaskProgress[];
+    startedAt?: string | null;
+    status?: CommonTaskStatusEnum;
+    type?: string;
+    updatedAt?: string;
+}
+/** Errors that occured on the task */
+export interface CommonTaskError {
+    message?: string;
+}
+/** Detailed information about an asynchronous operation progress steps */
+export interface CommonTaskProgress {
+    name?: string;
+    status?: CommonTaskStatusEnum;
+}
+/** TaskStatusEnum */
+export type CommonTaskStatusEnum = "DONE" | "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Resource tag filter */
+export interface IamResourceTagFilter {
+    operator?: IamResourceTagFilterOperatorEnum | null;
+    value?: string;
+}
+/** Operator that can be used in order to filter resources tags */
+export type IamResourceTagFilterOperatorEnum = "EQ" | "EXISTS" | "ILIKE" | "LIKE" | "NEQ" | "NEXISTS";
+/** IAM resource metadata embedded in services models */
+export interface IamResourceMetadata {
+    displayName?: string | null;
+    id?: string;
+    state?: IamResourceMetadataStateEnum | null;
+    tags?: Record<string, string> | null;
+    urn?: string;
+}
+/** Resource state */
+export type IamResourceMetadataStateEnum = "EXPIRED" | "IN_CREATION" | "OK" | "SUSPENDED";
+/** The AZ Name of your VMware Cloud Director project */
+export type VmwareCloudDirectorAZNameEnum = "ca-east-bhs-a" | "eu-central-waw-a" | "eu-west-eri-a" | "eu-west-lim-a" | "eu-west-rbx-a" | "eu-west-sbg-a";
+/** VMware Cloud Director Backup service */
+export interface VmwareCloudDirectorBackupBackupDetails {
+    createdAt?: string;
+    currentState?: VmwareCloudDirectorBackupCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: VmwareCloudDirectorBackupResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorBackupTargetSpec;
+    updatedAt?: string;
+}
+/** Update specification of VMware Cloud Director Backup service */
+export interface VmwareCloudDirectorBackupBackupDetailsUpdate {
+    targetSpec: VmwareCloudDirectorBackupTargetSpec;
+}
+/** VMware Cloud Director Backup service */
+export interface VmwareCloudDirectorBackupBackupDetailsWithIAM {
+    createdAt?: string;
+    currentState?: VmwareCloudDirectorBackupCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    resourceStatus?: VmwareCloudDirectorBackupResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorBackupTargetSpec;
+    updatedAt?: string;
+}
+/** VMware Cloud Director Backup service current state */
+export interface VmwareCloudDirectorBackupCurrentState {
+    azName?: VmwareCloudDirectorAZNameEnum;
+    offers?: VmwareCloudDirectorBackupCurrentStateOffer[];
+}
+/** VMware Cloud Director Backup current state */
+export interface VmwareCloudDirectorBackupCurrentStateOffer {
+    name?: VmwareCloudDirectorBackupOfferNameEnum;
+    protectionPrimaryRegion?: VmwareCloudDirectorRegionNameEnum;
+    protectionReplicatedRegion?: VmwareCloudDirectorRegionNameEnum | null;
+    quotaInTB?: number;
+    status?: VmwareCloudDirectorBackupResourceStatusEnum;
+    usedSpaceInGB?: number;
+}
+/** VMware Cloud Director Backup target */
+export interface VmwareCloudDirectorBackupTargetOffer {
+    name: VmwareCloudDirectorBackupOfferNameEnum;
+    quotaInTB: number;
+}
+/** VMware Cloud Director Backup target spec */
+export interface VmwareCloudDirectorBackupTargetSpec {
+    offers: VmwareCloudDirectorBackupTargetOffer[];
+}
+/** The backup offer type of your VMware Cloud Director project */
+export type VmwareCloudDirectorBackupOfferNameEnum = "BRONZE" | "GOLD" | "SILVER";
+/** Status of VMware Cloud Director backup service */
+export type VmwareCloudDirectorBackupResourceStatusEnum = "CREATING" | "DISABLED" | "DISABLING" | "READY" | "REMOVED" | "REMOVING" | "UPDATING";
+/** The billing type of your VMware Cloud Director project */
+export type VmwareCloudDirectorBillingTypeEnum = "DEMO" | "MONTHLY";
+/** The commercial range of your VMware Cloud Director project */
+export type VmwareCloudDirectorCommercialRangeEnum = "NSX" | "STANDARD" | "VSAN-NSX";
+/** Organization Virtual DataCenter compute resource */
+export interface VmwareCloudDirectorCompute {
+    currentState?: VmwareCloudDirectorComputeCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    updatedAt?: string;
+}
+/** Current status of organization Virtual DataCenter compute resource */
+export interface VmwareCloudDirectorComputeCurrentState {
+    billingType?: VmwareCloudDirectorBillingTypeEnum;
+    memoryQuota?: number;
+    name?: string;
+    profile?: string;
+    vCPUCount?: number;
+}
+/** Specifies the current state of VMware Cloud Director migration service */
+export interface VmwareCloudDirectorMigrationCurrentState {
+    azName?: VmwareCloudDirectorAZNameEnum;
+    ips?: string[];
+    migrationCloudUrl?: string;
+    organizationId?: string;
+}
+/** VMware Cloud Director migration service */
+export interface VmwareCloudDirectorMigrationMigrationDetails {
+    createdAt?: string;
+    currentState?: VmwareCloudDirectorMigrationCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorMigrationTargetSpec;
+    updatedAt?: string;
+}
+/** VMware Cloud Director migration service */
+export interface VmwareCloudDirectorMigrationMigrationDetailsWithIAM {
+    createdAt?: string;
+    currentState?: VmwareCloudDirectorMigrationCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorMigrationTargetSpec;
+    updatedAt?: string;
+}
+/** Specifies the allowed IP addresses to reach migration service */
+export interface VmwareCloudDirectorMigrationTargetSpec {
+    ips?: string[];
+}
+/** Organization network access control list resource */
+export interface VmwareCloudDirectorNetworkAcl {
+    currentState?: VmwareCloudDirectorNetworkAclCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorNetworkAclTargetSpec;
+    updatedAt?: string;
+}
+/** Current status of the network access control list associated to an organization */
+export interface VmwareCloudDirectorNetworkAclCurrentState {
+    networks?: VmwareCloudDirectorNetworkAclRule[];
+}
+/** A network access control list rule allows a given IP block to reach an organization */
+export interface VmwareCloudDirectorNetworkAclRule {
+    name: string;
+    network: string;
+}
+/** Desired status of organization network access control list resource */
+export interface VmwareCloudDirectorNetworkAclTargetSpec {
+    networks: VmwareCloudDirectorNetworkAclRule[];
+}
+/** Update specification of the organization network access control list resource */
+export interface VmwareCloudDirectorNetworkAclUpdate {
+    targetSpec: VmwareCloudDirectorNetworkAclTargetSpec;
+}
+/** Available orderable resources */
+export interface VmwareCloudDirectorOrderableResource {
+    compute?: VmwareCloudDirectorOrderableResourceCompute[];
+    storage?: VmwareCloudDirectorOrderableResourceStorage[];
+}
+/** Possible Virtual Host */
+export interface VmwareCloudDirectorOrderableResourceCompute {
+    memoryQuota?: number;
+    name?: string;
+    profile?: string;
+    vCPUCount?: number;
+    vCPUSpeed?: number;
+}
+/** Possible Storage */
+export interface VmwareCloudDirectorOrderableResourceStorage {
+    capacity?: number;
+    name?: string;
+    performanceClass?: number;
+    profile?: string;
+    type?: string;
+}
+/** VMware Cloud Director organization service */
+export interface VmwareCloudDirectorOrganization {
+    currentState?: VmwareCloudDirectorOrganizationCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorOrganizationTargetSpec;
+    updatedAt?: string;
+}
+/** Current status of VMware Cloud Director organization service */
+export interface VmwareCloudDirectorOrganizationCurrentState {
+    apiUrl?: string;
+    billingType?: VmwareCloudDirectorBillingTypeEnum;
+    description?: string;
+    fullName?: string;
+    name?: string;
+    region?: VmwareCloudDirectorRegionNameEnum;
+    spla?: boolean;
+    webInterfaceUrl?: string;
+}
+/** Target specification of VMware Cloud Director organization service */
+export interface VmwareCloudDirectorOrganizationTargetSpec {
+    description?: string;
+    fullName: string;
+}
+/** Update specification of VMware Cloud Director organization service */
+export interface VmwareCloudDirectorOrganizationUpdate {
+    targetSpec: VmwareCloudDirectorOrganizationTargetSpec;
+}
+/** VMware Cloud Director organization service */
+export interface VmwareCloudDirectorOrganizationWithIAM {
+    currentState?: VmwareCloudDirectorOrganizationCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorOrganizationTargetSpec;
+    updatedAt?: string;
+}
+/** Hosting location */
+export interface VmwareCloudDirectorRegion {
+    location?: VmwareCloudDirectorRegionLocationEnum;
+    region?: VmwareCloudDirectorRegionNameEnum;
+}
+/** The region of your VMware Cloud Director project */
+export type VmwareCloudDirectorRegionLocationEnum = "Asia Pacific (Australia - Sydney)" | "Asia Pacific (Singapore -Singapore)" | "Europe (France - Gravelines)" | "Europe (France - Paris)" | "Europe (France - Roubaix)" | "Europe (France - Strasbourg)" | "Europe (Germany - Limburg)" | "Europe (Poland - Warsaw)" | "Europe (United Kingdom - Erith)" | "North America (Canada - East - Beauharnois)" | "North America (US - East - Vinthill)" | "North America (US - West - Hillsboro)";
+/** The region of your VMware Cloud Director project */
+export type VmwareCloudDirectorRegionNameEnum = "ap-south-mum" | "ap-southeast-sgp" | "ap-southeast-syd" | "ca-east-bhs" | "ca-east-tor" | "eu-central-waw" | "eu-west-eri" | "eu-west-gra" | "eu-west-lim" | "eu-west-par" | "eu-west-rbx" | "eu-west-sbg" | "us-east-vin" | "us-west-hil";
+/** Organization Virtual DataCenter storage resource */
+export interface VmwareCloudDirectorStorage {
+    currentState?: VmwareCloudDirectorStorageCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    updatedAt?: string;
+}
+/** Current status of organization Virtual DataCenter storage resource */
+export interface VmwareCloudDirectorStorageCurrentState {
+    billingType?: VmwareCloudDirectorBillingTypeEnum;
+    capacity?: number;
+    name?: string;
+    profile?: string;
+    type?: string;
+}
+/** Organization Virtual DataCenter service */
+export interface VmwareCloudDirectorVirtualDataCenter {
+    currentState?: VmwareCloudDirectorVirtualDataCenterCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorVirtualDataCenterTargetSpec;
+    updatedAt?: string;
+}
+/** Current status of organization Virtual DataCenter service */
+export interface VmwareCloudDirectorVirtualDataCenterCurrentState {
+    commercialRange?: VmwareCloudDirectorCommercialRangeEnum;
+    description?: string;
+    ipQuota?: number;
+    memoryQuota?: number;
+    name?: string;
+    region?: VmwareCloudDirectorRegionNameEnum;
+    storageQuota?: number;
+    vCPUCount?: number;
+    vCPUSpeed?: number;
+    vrack?: string | null;
+}
+/** Target specification of organization Virtual DataCenter service */
+export interface VmwareCloudDirectorVirtualDataCenterTargetSpec {
+    description: string;
+    vCPUSpeed: number;
+}
+/** Update specification of organization Virtual DataCenter service */
+export interface VmwareCloudDirectorVirtualDataCenterUpdate {
+    targetSpec: VmwareCloudDirectorVirtualDataCenterTargetSpec;
+}
+/** Organization Virtual DataCenter service */
+export interface VmwareCloudDirectorVirtualDataCenterWithIAM {
+    currentState?: VmwareCloudDirectorVirtualDataCenterCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorVirtualDataCenterTargetSpec;
+    updatedAt?: string;
+}
+/** Organization Virtual DataCenter vrack segment resource */
+export interface VmwareCloudDirectorVrackSegment {
+    currentState?: VmwareCloudDirectorVrackSegmentCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: VmwareCloudDirectorVrackSegmentTargetSpec;
+    updatedAt?: string;
+}
+/** Current status of segment associated to an organization */
+export interface VmwareCloudDirectorVrackSegmentCurrentState {
+    mode?: VmwareCloudDirectorVrackSegmentModeEnum;
+    networks?: string[];
+    type?: VmwareCloudDirectorVrackSegmentTypeEnum;
+    vlanId?: string;
+}
+/** Current status of organization Virtual DataCenter vrack segment resource */
+export interface VmwareCloudDirectorVrackSegmentTargetSpec {
+    mode: VmwareCloudDirectorVrackSegmentModeEnum;
+    networks: string[];
+    vlanId: string;
+}
+/** Update specification of the organization Virtual DataCenter vrack segment resource */
+export interface VmwareCloudDirectorVrackSegmentUpdate {
+    targetSpec: VmwareCloudDirectorVrackSegmentTargetSpec;
+}
+/** Connection mode of the segment */
+export type VmwareCloudDirectorVrackSegmentModeEnum = "NSX_EDGE_GATEWAY" | "TAGGED" | "TRUNK" | "UNTAGGED";
+/** Type of vrack segment */
+export type VmwareCloudDirectorVrackSegmentTypeEnum = "DEFAULT" | "MIGRATED";
+//# sourceMappingURL=types.d.ts.map

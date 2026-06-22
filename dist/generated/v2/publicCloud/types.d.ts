@@ -1,0 +1,2017 @@
+/** Asynchronous operation currently running */
+export interface CommonCurrentTask {
+    errors?: CommonTaskError[] | null;
+    id?: string;
+    link?: string;
+    status?: CommonCurrentTaskStatusEnum | null;
+    type?: string;
+}
+/** Current status of a task. A task in ERROR cannot be retried without your inputs. PENDING tasks will be executed as soon as possible. A RUNNING task is currently executing your original request. SCHEDULED is used for tasks that will be executed in the future */
+export type CommonCurrentTaskStatusEnum = "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Represents an event for an async envelope */
+export interface CommonEvent {
+    createdAt?: string;
+    kind?: string;
+    link?: string | null;
+    message?: string;
+    type?: CommonEventTypeEnum;
+}
+/** List all defined values for an event type field */
+export type CommonEventTypeEnum = "TARGET_SPEC_UPDATE" | "TASK_ERROR" | "TASK_START" | "TASK_SUCCESS";
+/** ResourceStatusEnum */
+export type CommonResourceStatusEnum = "CREATING" | "DELETING" | "ERROR" | "OUT_OF_SYNC" | "READY" | "SUSPENDED" | "UNKNOWN" | "UPDATING";
+/** Asynchronous operation */
+export interface CommonTask {
+    createdAt?: string;
+    errors?: CommonTaskError[] | null;
+    finishedAt?: string | null;
+    id?: string;
+    link?: string;
+    message?: string;
+    progress?: CommonTaskProgress[];
+    startedAt?: string | null;
+    status?: CommonTaskStatusEnum;
+    type?: string;
+    updatedAt?: string;
+}
+/** Errors that occured on the task */
+export interface CommonTaskError {
+    message?: string;
+}
+/** Detailed information about an asynchronous operation progress steps */
+export interface CommonTaskProgress {
+    name?: string;
+    status?: CommonTaskStatusEnum;
+}
+/** TaskStatusEnum */
+export type CommonTaskStatusEnum = "DONE" | "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Resource tag filter */
+export interface IamResourceTagFilter {
+    operator?: IamResourceTagFilterOperatorEnum | null;
+    value?: string;
+}
+/** Operator that can be used in order to filter resources tags */
+export type IamResourceTagFilterOperatorEnum = "EQ" | "EXISTS" | "ILIKE" | "LIKE" | "NEQ" | "NEXISTS";
+/** IAM resource metadata embedded in services models */
+export interface IamResourceMetadata {
+    displayName?: string | null;
+    id?: string;
+    state?: IamResourceMetadataStateEnum | null;
+    tags?: Record<string, string> | null;
+    urn?: string;
+}
+/** Resource state */
+export type IamResourceMetadataStateEnum = "EXPIRED" | "IN_CREATION" | "OK" | "SUSPENDED";
+/** A Public Cloud block storage backup */
+export interface PublicCloudBlockStorageBackup {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudBlockStorageBackupCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudBlockStorageBackupTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud block storage backup */
+export interface PublicCloudBlockStorageBackupCreation {
+    targetSpec: PublicCloudBlockStorageBackupTargetSpec;
+}
+/** Current state of a block storage backup as observed from the infrastructure */
+export interface PublicCloudBlockStorageBackupCurrentState {
+    description?: string | null;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    size?: number;
+    volumeId?: string;
+}
+/** Target specification for a block storage backup */
+export interface PublicCloudBlockStorageBackupTargetSpec {
+    description?: string | null;
+    location: PublicCloudCommonLocation;
+    name: string;
+    volumeId: string;
+}
+/** Payload to update a Public Cloud block storage backup */
+export interface PublicCloudBlockStorageBackupUpdate {
+    checksum: string;
+    targetSpec: PublicCloudBlockStorageBackupUpdateTargetSpec;
+}
+/** Target specification for updating a block storage backup (immutable fields like location and volumeId are excluded) */
+export interface PublicCloudBlockStorageBackupUpdateTargetSpec {
+    description?: string;
+    name?: string;
+}
+/** A Public Cloud block storage volume */
+export interface PublicCloudBlockStorageBlock {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudBlockStorageBlockCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudBlockStorageBlockTargetSpec;
+    updatedAt?: string;
+}
+/** An instance currently attached to a block storage volume */
+export interface PublicCloudBlockStorageBlockAttachedInstance {
+    id?: string;
+}
+/** Optional source to create a block storage volume from (backup, snapshot, or image). Only one source may be specified. */
+export interface PublicCloudBlockStorageBlockCreateFrom {
+    backupId?: string | null;
+    imageId?: string | null;
+    snapshotId?: string | null;
+}
+/** Payload to create a Public Cloud block storage volume */
+export interface PublicCloudBlockStorageBlockCreation {
+    targetSpec: PublicCloudBlockStorageBlockTargetSpec;
+}
+/** Current state of a block storage volume as observed from the infrastructure */
+export interface PublicCloudBlockStorageBlockCurrentState {
+    attachedInstances?: PublicCloudBlockStorageBlockAttachedInstance[] | null;
+    bootable?: boolean;
+    description?: string | null;
+    encryption?: PublicCloudBlockStorageBlockEncryption;
+    location?: PublicCloudBlockStorageBlockLocation;
+    locked?: boolean;
+    name?: string;
+    size?: number;
+    status?: PublicCloudBlockStorageVolumeStatusEnum;
+    volumeType?: PublicCloudBlockStorageVolumeTypeEnum;
+}
+/** Encryption configuration for a block storage volume */
+export interface PublicCloudBlockStorageBlockEncryption {
+    enabled: boolean;
+}
+/** Location for a block storage volume */
+export interface PublicCloudBlockStorageBlockLocation {
+    availabilityZone?: string | null;
+    region: string;
+}
+/** Target specification for a block storage volume */
+export interface PublicCloudBlockStorageBlockTargetSpec {
+    createFrom?: PublicCloudBlockStorageBlockCreateFrom | null;
+    encryption?: PublicCloudBlockStorageBlockEncryption | null;
+    location: PublicCloudBlockStorageBlockLocation;
+    name: string;
+    size: number;
+    volumeType?: PublicCloudBlockStorageVolumeTypeEnum | null;
+}
+/** Payload to update a Public Cloud block storage volume */
+export interface PublicCloudBlockStorageBlockUpdate {
+    checksum: string;
+    targetSpec: PublicCloudBlockStorageBlockUpdateTargetSpec;
+}
+/** Target specification for updating a block storage volume (immutable fields like location and encryption are excluded) */
+export interface PublicCloudBlockStorageBlockUpdateTargetSpec {
+    name: string;
+    size: number;
+    volumeType?: PublicCloudBlockStorageVolumeTypeEnum | null;
+}
+/** A Public Cloud block storage volume snapshot */
+export interface PublicCloudBlockStorageSnapshot {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudBlockStorageSnapshotCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudBlockStorageSnapshotTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud block storage volume snapshot */
+export interface PublicCloudBlockStorageSnapshotCreation {
+    targetSpec: PublicCloudBlockStorageSnapshotTargetSpec;
+}
+/** Current state of a block storage volume snapshot as observed from the infrastructure */
+export interface PublicCloudBlockStorageSnapshotCurrentState {
+    description?: string | null;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    size?: number;
+    volumeId?: string;
+}
+/** Target specification for a block storage volume snapshot */
+export interface PublicCloudBlockStorageSnapshotTargetSpec {
+    description?: string | null;
+    location: PublicCloudCommonLocation;
+    name: string;
+    volumeId: string;
+}
+/** Payload to update a Public Cloud block storage volume snapshot */
+export interface PublicCloudBlockStorageSnapshotUpdate {
+    checksum: string;
+    targetSpec: PublicCloudBlockStorageSnapshotUpdateTargetSpec;
+}
+/** Target specification for updating a block storage volume snapshot (immutable fields like location and volumeId are excluded) */
+export interface PublicCloudBlockStorageSnapshotUpdateTargetSpec {
+    description?: string;
+    name: string;
+}
+/** Possible statuses for a block storage volume */
+export type PublicCloudBlockStorageVolumeStatusEnum = "ATTACHING" | "AVAILABLE" | "CREATING" | "DELETING" | "DETACHING" | "DOWNLOADING" | "ERROR" | "ERROR_BACKING_UP" | "ERROR_DELETING" | "ERROR_EXTENDING" | "ERROR_RESTORING" | "EXTENDING" | "IN_USE" | "RETYPING";
+/** Possible volume types for a block storage volume */
+export type PublicCloudBlockStorageVolumeTypeEnum = "CLASSIC" | "HIGH_SPEED" | "HIGH_SPEED_GEN2";
+/** Resource location */
+export interface PublicCloudCommonLocation {
+    availabilityZone?: string | null;
+    region: string;
+}
+/** A Public Cloud floating IP */
+export interface PublicCloudFloatingIpFloatingIP {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudFloatingIpFloatingIPCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudFloatingIpFloatingIPTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud floating IP */
+export interface PublicCloudFloatingIpFloatingIPCreation {
+    targetSpec: PublicCloudFloatingIpFloatingIPTargetSpec;
+}
+/** Current state of a floating IP from OpenStack */
+export interface PublicCloudFloatingIpFloatingIPCurrentState {
+    description?: string | null;
+    ip?: string;
+    location?: PublicCloudFloatingIpFloatingIPLocation;
+    network?: PublicCloudFloatingIpFloatingIPNetwork;
+    status?: PublicCloudFloatingIpFloatingIPStatusEnum;
+}
+/** Floating IP location */
+export interface PublicCloudFloatingIpFloatingIPLocation {
+    availabilityZone?: string | null;
+    region: string;
+}
+/** A network reference for a floating IP */
+export interface PublicCloudFloatingIpFloatingIPNetwork {
+    id?: string;
+}
+/** OpenStack floating IP status */
+export type PublicCloudFloatingIpFloatingIPStatusEnum = "ACTIVE" | "DOWN" | "ERROR";
+/** Desired specification for a floating IP */
+export interface PublicCloudFloatingIpFloatingIPTargetSpec {
+    description?: string | null;
+    location: PublicCloudFloatingIpFloatingIPLocation;
+}
+/** Payload to update a Public Cloud floating IP */
+export interface PublicCloudFloatingIpFloatingIPUpdate {
+    checksum: string;
+    targetSpec: PublicCloudFloatingIpFloatingIPUpdateTargetSpec;
+}
+/** Desired specification for updating a floating IP (mutable fields only) */
+export interface PublicCloudFloatingIpFloatingIPUpdateTargetSpec {
+    description: string;
+}
+/** External gateway configuration */
+export interface PublicCloudGatewayExternalGateway {
+    enabled: boolean;
+    model?: PublicCloudGatewayExternalGatewayModelEnum | null;
+}
+/** External gateway sizing model */
+export type PublicCloudGatewayExternalGatewayModelEnum = "2XL" | "3XL" | "L" | "M" | "S" | "XL";
+/** A Public Cloud gateway (OpenStack router) */
+export interface PublicCloudGatewayGateway {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudGatewayGatewayCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudGatewayGatewayTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud gateway */
+export interface PublicCloudGatewayGatewayCreation {
+    targetSpec: PublicCloudGatewayGatewayTargetSpec;
+}
+/** Current state of a gateway from OpenStack */
+export interface PublicCloudGatewayGatewayCurrentState {
+    description?: string | null;
+    externalGateway?: PublicCloudGatewayExternalGateway;
+    externalIp?: string | null;
+    location?: PublicCloudGatewayGatewayLocation;
+    name?: string;
+    status?: PublicCloudGatewayGatewayStatusEnum;
+    subnets?: PublicCloudGatewayGatewaySubnet[] | null;
+}
+/** Gateway location */
+export interface PublicCloudGatewayGatewayLocation {
+    availabilityZone?: string | null;
+    region: string;
+}
+/** OpenStack router status */
+export type PublicCloudGatewayGatewayStatusEnum = "ACTIVE" | "BUILD" | "DOWN" | "ERROR";
+/** A subnet reference for a gateway */
+export interface PublicCloudGatewayGatewaySubnet {
+    id: string;
+}
+/** Desired specification for a gateway */
+export interface PublicCloudGatewayGatewayTargetSpec {
+    description?: string | null;
+    externalGateway: PublicCloudGatewayExternalGateway;
+    location: PublicCloudGatewayGatewayLocation;
+    name: string;
+    subnets?: PublicCloudGatewayGatewaySubnet[] | null;
+}
+/** Payload to update a Public Cloud gateway */
+export interface PublicCloudGatewayGatewayUpdate {
+    checksum: string;
+    targetSpec: PublicCloudGatewayGatewayUpdateTargetSpec;
+}
+/** Desired specification for updating a gateway (mutable fields only) */
+export interface PublicCloudGatewayGatewayUpdateTargetSpec {
+    description?: string | null;
+    externalGateway: PublicCloudGatewayExternalGateway;
+    name: string;
+    subnets?: PublicCloudGatewayGatewaySubnet[] | null;
+}
+/** A Public Cloud instance autobackup (Mistral crontrigger for scheduled automatic backups) */
+export interface PublicCloudInstanceAutobackup {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudInstanceAutobackupCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudInstanceAutobackupTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud instance autobackup */
+export interface PublicCloudInstanceAutobackupCreation {
+    targetSpec: PublicCloudInstanceAutobackupTargetSpec;
+}
+/** Current state of an instance autobackup as observed from the infrastructure */
+export interface PublicCloudInstanceAutobackupCurrentState {
+    cron?: string;
+    distant?: PublicCloudInstanceAutobackupDistant | null;
+    imageName?: string;
+    instance?: PublicCloudInstanceAutobackupInstanceRef;
+    lastExecutions?: PublicCloudInstanceAutobackupExecution[] | null;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    nextExecutionTime?: string | null;
+    rotation?: number;
+    workflowName?: string;
+}
+/** Cross-region backup configuration for an autobackup */
+export interface PublicCloudInstanceAutobackupDistant {
+    imageName: string;
+    region: string;
+}
+/** A single execution of an instance autobackup, as recorded by the autobackup execution engine when the backup workflow runs */
+export interface PublicCloudInstanceAutobackupExecution {
+    errorMessage?: string | null;
+    id?: string;
+    startedAt?: string | null;
+    state?: PublicCloudInstanceAutobackupExecutionStateEnum;
+    updatedAt?: string | null;
+}
+/** State of a single autobackup execution: SUCCESS when the backup completed, ERROR when it failed, RUNNING while in progress, IDLE when scheduled but not yet running. */
+export type PublicCloudInstanceAutobackupExecutionStateEnum = "ERROR" | "IDLE" | "RUNNING" | "SUCCESS";
+/** Reference to the source instance for an autobackup */
+export interface PublicCloudInstanceAutobackupInstanceRef {
+    id: string;
+}
+/** Target specification for an instance autobackup (all fields, used for creation) */
+export interface PublicCloudInstanceAutobackupTargetSpec {
+    cron: string;
+    distant?: PublicCloudInstanceAutobackupDistant | null;
+    imageName: string;
+    instance: PublicCloudInstanceAutobackupInstanceRef;
+    location: PublicCloudCommonLocation;
+    name: string;
+    rotation: number;
+}
+/** A Public Cloud instance backup (Glance image created from an instance) */
+export interface PublicCloudInstanceBackup {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudInstanceBackupCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudInstanceBackupTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud instance backup */
+export interface PublicCloudInstanceBackupCreation {
+    targetSpec: PublicCloudInstanceBackupTargetSpec;
+}
+/** Current state of an instance backup as observed from the infrastructure */
+export interface PublicCloudInstanceBackupCurrentState {
+    instance?: PublicCloudInstanceBackupInstanceRef;
+    location?: PublicCloudCommonLocation;
+    minDisk?: number | null;
+    minRam?: number | null;
+    name?: string;
+    size?: number | null;
+    status?: PublicCloudInstanceImageStatusEnum;
+    visibility?: PublicCloudInstanceImageVisibilityEnum;
+}
+/** Reference to the source instance for a backup */
+export interface PublicCloudInstanceBackupInstanceRef {
+    id: string;
+}
+/** Target specification for an instance backup */
+export interface PublicCloudInstanceBackupTargetSpec {
+    instance: PublicCloudInstanceBackupInstanceRef;
+    location: PublicCloudCommonLocation;
+    name: string;
+}
+/** Console output (log) retrieved from an instance */
+export interface PublicCloudInstanceConsoleOutput {
+    output?: string;
+}
+/** Possible statuses for an instance image */
+export type PublicCloudInstanceImageStatusEnum = "ACTIVE" | "DEACTIVATED" | "DELETED" | "IMPORTING" | "KILLED" | "PENDING_DELETE" | "QUEUED" | "SAVING";
+/** Possible visibility levels for an instance image */
+export type PublicCloudInstanceImageVisibilityEnum = "COMMUNITY" | "PRIVATE" | "PUBLIC" | "SHARED";
+/** A Public Cloud compute instance */
+export interface PublicCloudInstanceInstance {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudInstanceInstanceCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudInstanceInstanceTargetSpec;
+    updatedAt?: string;
+}
+/** Optional parameters for an instance action */
+export interface PublicCloudInstanceInstanceActionParameters {
+    hard?: boolean | null;
+    imageId?: string | null;
+}
+/** Payload to perform an imperative action on an instance */
+export interface PublicCloudInstanceInstanceActionRequest {
+    checksum: string;
+    parameters?: PublicCloudInstanceInstanceActionParameters | null;
+    type: PublicCloudInstanceInstanceActionTypeEnum;
+}
+/** Supported imperative action types for an instance */
+export type PublicCloudInstanceInstanceActionTypeEnum = "LOCK" | "REBOOT" | "RESCUE" | "UNLOCK" | "UNRESCUE";
+/** Payload to create a Public Cloud instance */
+export interface PublicCloudInstanceInstanceCreation {
+    targetSpec: PublicCloudInstanceInstanceTargetSpec;
+}
+/** Current state details of an instance */
+export interface PublicCloudInstanceInstanceCurrentState {
+    flavor?: PublicCloudInstanceInstanceFlavor;
+    group?: PublicCloudInstanceInstanceGroupRef | null;
+    hostId?: string | null;
+    image?: PublicCloudInstanceInstanceImage;
+    location?: PublicCloudInstanceInstanceLocation;
+    locked?: boolean;
+    name?: string;
+    networks?: PublicCloudInstanceInstanceNetwork[] | null;
+    powerState?: PublicCloudInstancePowerStateEnum;
+    projectId?: string;
+    securityGroups?: PublicCloudSecurityGroupSecurityGroupRef[] | null;
+    sshKeyName?: string | null;
+    userId?: string;
+    volumes?: PublicCloudInstanceInstanceVolume[] | null;
+}
+/** Flavor details of an instance */
+export interface PublicCloudInstanceInstanceFlavor {
+    disk?: number;
+    id?: string;
+    name?: string;
+    ram?: number;
+    vcpus?: number;
+}
+/** Reference to a flavor for instance target spec */
+export interface PublicCloudInstanceInstanceFlavorRef {
+    id: string;
+}
+/** Reference to an instance group */
+export interface PublicCloudInstanceInstanceGroupRef {
+    id: string;
+}
+/** Image details of an instance */
+export interface PublicCloudInstanceInstanceImage {
+    deprecated?: boolean;
+    id?: string;
+    name?: string | null;
+    size?: number | null;
+    status?: PublicCloudInstanceImageStatusEnum | null;
+}
+/** Reference to an image for instance target spec */
+export interface PublicCloudInstanceInstanceImageRef {
+    id: string;
+}
+/** Instance location */
+export interface PublicCloudInstanceInstanceLocation {
+    availabilityZone?: string | null;
+    region: string;
+}
+/** Network attached to the instance */
+export interface PublicCloudInstanceInstanceNetwork {
+    addresses?: PublicCloudInstanceInstanceNetworkAddress[] | null;
+    floatingIpId?: string | null;
+    gatewayId?: string | null;
+    id?: string;
+    public?: boolean;
+    subnetId?: string | null;
+}
+/** An IP address of an instance network interface */
+export interface PublicCloudInstanceInstanceNetworkAddress {
+    ip?: string;
+    mac?: string;
+    type?: string;
+    version?: number;
+}
+/** Reference to a network for instance target spec */
+export interface PublicCloudInstanceInstanceNetworkRef {
+    floatingIpId?: string | null;
+    id?: string | null;
+    public: boolean;
+    subnetId?: string | null;
+}
+/** Target specification for an instance */
+export interface PublicCloudInstanceInstanceTargetSpec {
+    flavor: PublicCloudInstanceInstanceFlavorRef;
+    group?: PublicCloudInstanceInstanceGroupRef | null;
+    image: PublicCloudInstanceInstanceImageRef;
+    location: PublicCloudInstanceInstanceLocation;
+    name: string;
+    networks: PublicCloudInstanceInstanceNetworkRef[] | null;
+    powerState?: PublicCloudInstancePowerStateEnum | null;
+    securityGroups?: PublicCloudSecurityGroupSecurityGroupRef[] | null;
+    sshKeyName?: string | null;
+    volumes: PublicCloudInstanceInstanceVolumeRef[] | null;
+}
+/** Payload to update a Public Cloud instance */
+export interface PublicCloudInstanceInstanceUpdate {
+    checksum: string;
+    targetSpec: PublicCloudInstanceInstanceUpdateTargetSpec;
+}
+/** Target specification for updating an instance (location cannot be changed after creation) */
+export interface PublicCloudInstanceInstanceUpdateTargetSpec {
+    flavor: PublicCloudInstanceInstanceFlavorRef;
+    image: PublicCloudInstanceInstanceImageRef;
+    name: string;
+    networks: PublicCloudInstanceInstanceNetworkRef[] | null;
+    powerState?: PublicCloudInstancePowerStateEnum | null;
+    securityGroups?: PublicCloudSecurityGroupSecurityGroupRef[] | null;
+    volumes: PublicCloudInstanceInstanceVolumeRef[] | null;
+}
+/** Volume attached to the instance */
+export interface PublicCloudInstanceInstanceVolume {
+    id?: string;
+    name?: string;
+    size?: number;
+}
+/** Reference to a volume for instance target spec */
+export interface PublicCloudInstanceInstanceVolumeRef {
+    id: string;
+}
+/** Desired power state for an instance */
+export type PublicCloudInstancePowerStateEnum = "ACTIVE" | "RESCUE" | "SHELVED" | "SHUTOFF";
+/** A remote console session for an instance */
+export interface PublicCloudInstanceRemoteConsole {
+    protocol?: PublicCloudInstanceRemoteConsoleProtocolEnum;
+    type?: PublicCloudInstanceRemoteConsoleTypeEnum;
+    url?: string;
+}
+/** Supported remote console protocols */
+export type PublicCloudInstanceRemoteConsoleProtocolEnum = "SERIAL" | "SPICE" | "VNC";
+/** Request payload to create a remote console session for an instance */
+export interface PublicCloudInstanceRemoteConsoleRequest {
+    protocol: PublicCloudInstanceRemoteConsoleProtocolEnum;
+    type: PublicCloudInstanceRemoteConsoleTypeEnum;
+}
+/** Supported remote console display types */
+export type PublicCloudInstanceRemoteConsoleTypeEnum = "NOVNC" | "SERIAL" | "SPICE_HTML5" | "XVPVNC";
+/** A Public Cloud instance group (server group with placement policy) */
+export interface PublicCloudInstanceGroupInstanceGroup {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudInstanceGroupInstanceGroupCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudInstanceGroupInstanceGroupTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud instance group */
+export interface PublicCloudInstanceGroupInstanceGroupCreation {
+    targetSpec: PublicCloudInstanceGroupInstanceGroupTargetSpec;
+}
+/** Current state of an instance group */
+export interface PublicCloudInstanceGroupInstanceGroupCurrentState {
+    location?: PublicCloudCommonLocation;
+    members?: PublicCloudInstanceGroupInstanceGroupMemberRef[] | null;
+    name?: string;
+    policy?: PublicCloudInstanceGroupPolicyEnum;
+}
+/** Reference to an instance member of a group */
+export interface PublicCloudInstanceGroupInstanceGroupMemberRef {
+    id?: string;
+}
+/** Target specification for an instance group */
+export interface PublicCloudInstanceGroupInstanceGroupTargetSpec {
+    location: PublicCloudCommonLocation;
+    name: string;
+    policy: PublicCloudInstanceGroupPolicyEnum;
+}
+/** Placement policy for an instance group */
+export type PublicCloudInstanceGroupPolicyEnum = "AFFINITY" | "ANTI_AFFINITY";
+/** Algorithm associated with a Key Manager secret */
+export type PublicCloudKeyManagerAlgorithmEnum = "AES" | "DH" | "DSA" | "EC" | "RSA";
+/** Bit length of a Key Manager secret */
+export type PublicCloudKeyManagerBitLengthEnum = 128 | 256 | 512 | 1024 | 2048 | 4096;
+/** Type of resource consuming a Key Manager secret */
+export type PublicCloudKeyManagerConsumerResourceTypeEnum = "IMAGE" | "INSTANCE" | "LOADBALANCER";
+/** Type of service consuming a Key Manager secret */
+export type PublicCloudKeyManagerConsumerServiceEnum = "COMPUTE" | "IMAGE" | "LOADBALANCER" | "NETWORK";
+/** A Public Cloud key manager container */
+export interface PublicCloudKeyManagerContainer {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudKeyManagerContainerCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudKeyManagerContainerTargetSpec;
+    updatedAt?: string;
+}
+/** A consumer registered for a Key Manager container */
+export interface PublicCloudKeyManagerContainerConsumer {
+    id?: string;
+    resourceId?: string;
+    resourceType?: PublicCloudKeyManagerConsumerResourceTypeEnum;
+    service?: PublicCloudKeyManagerConsumerServiceEnum;
+}
+/** Payload to register or unregister a consumer for a Key Manager container */
+export interface PublicCloudKeyManagerContainerConsumerInput {
+    resourceId: string;
+    resourceType: PublicCloudKeyManagerConsumerResourceTypeEnum;
+    service: PublicCloudKeyManagerConsumerServiceEnum;
+}
+/** Payload to create a Public Cloud key manager container */
+export interface PublicCloudKeyManagerContainerCreation {
+    targetSpec: PublicCloudKeyManagerContainerTargetSpec;
+}
+/** Current state of a key manager container as observed from the infrastructure */
+export interface PublicCloudKeyManagerContainerCurrentState {
+    creatorId?: string | null;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    secretRefs?: PublicCloudKeyManagerContainerSecretRef[] | null;
+    status?: PublicCloudKeyManagerContainerStatusEnum;
+    type?: PublicCloudKeyManagerContainerTypeEnum;
+}
+/** A secret reference within a key manager container */
+export interface PublicCloudKeyManagerContainerSecretRef {
+    name: string;
+    secret: PublicCloudKeyManagerContainerSecretRefSecret;
+}
+/** Reference to a secret by ID */
+export interface PublicCloudKeyManagerContainerSecretRefSecret {
+    id: string;
+}
+/** Status of a Key Manager container in OpenStack */
+export type PublicCloudKeyManagerContainerStatusEnum = "ACTIVE" | "ERROR";
+/** Target specification for a key manager container */
+export interface PublicCloudKeyManagerContainerTargetSpec {
+    location: PublicCloudCommonLocation;
+    name: string;
+    secretRefs?: PublicCloudKeyManagerContainerSecretRef[] | null;
+    type: PublicCloudKeyManagerContainerTypeEnum;
+}
+/** Possible types for a key manager container */
+export type PublicCloudKeyManagerContainerTypeEnum = "CERTIFICATE" | "GENERIC" | "RSA";
+/** Payload to update a Public Cloud key manager container */
+export interface PublicCloudKeyManagerContainerUpdate {
+    checksum: string;
+    targetSpec: PublicCloudKeyManagerContainerUpdateTargetSpec;
+}
+/** Target specification for updating a Key Manager container (only secretRefs are mutable) */
+export interface PublicCloudKeyManagerContainerUpdateTargetSpec {
+    secretRefs: PublicCloudKeyManagerContainerSecretRef[];
+}
+/** Block cipher mode associated with a Key Manager secret */
+export type PublicCloudKeyManagerModeEnum = "CBC" | "CTR";
+/** Content type of a Key Manager secret payload */
+export type PublicCloudKeyManagerPayloadContentTypeEnum = "APPLICATION_OCTET_STREAM" | "APPLICATION_PKCS8" | "APPLICATION_PKIX_CERT" | "TEXT_PLAIN";
+/** A Public Cloud Key Manager secret */
+export interface PublicCloudKeyManagerSecret {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudKeyManagerSecretCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudKeyManagerSecretTargetSpec;
+    updatedAt?: string;
+}
+/** A consumer registered for a Key Manager secret */
+export interface PublicCloudKeyManagerSecretConsumer {
+    id?: string;
+    resourceId?: string;
+    resourceType?: PublicCloudKeyManagerConsumerResourceTypeEnum;
+    service?: PublicCloudKeyManagerConsumerServiceEnum;
+}
+/** Payload to register or unregister a consumer for a Key Manager secret */
+export interface PublicCloudKeyManagerSecretConsumerInput {
+    resourceId: string;
+    resourceType: PublicCloudKeyManagerConsumerResourceTypeEnum;
+    service: PublicCloudKeyManagerConsumerServiceEnum;
+}
+/** Payload to create a Key Manager secret */
+export interface PublicCloudKeyManagerSecretCreation {
+    targetSpec: PublicCloudKeyManagerSecretTargetSpec;
+}
+/** Current state of a Key Manager secret from OpenStack */
+export interface PublicCloudKeyManagerSecretCurrentState {
+    algorithm?: PublicCloudKeyManagerAlgorithmEnum | null;
+    bitLength?: PublicCloudKeyManagerBitLengthEnum | null;
+    creatorId?: string | null;
+    expiration?: string | null;
+    location?: PublicCloudCommonLocation;
+    metadata?: Record<string, string> | null;
+    mode?: PublicCloudKeyManagerModeEnum | null;
+    name?: string | null;
+    payloadContentType?: PublicCloudKeyManagerPayloadContentTypeEnum | null;
+    secretType?: PublicCloudKeyManagerSecretTypeEnum;
+    status?: PublicCloudKeyManagerSecretStatusEnum;
+}
+/** Payload content of a Key Manager secret */
+export interface PublicCloudKeyManagerSecretPayload {
+    payload?: string;
+}
+/** Status of a Key Manager secret in OpenStack */
+export type PublicCloudKeyManagerSecretStatusEnum = "ACTIVE" | "ERROR";
+/** Desired specification for a Key Manager secret */
+export interface PublicCloudKeyManagerSecretTargetSpec {
+    algorithm?: PublicCloudKeyManagerAlgorithmEnum | null;
+    bitLength?: PublicCloudKeyManagerBitLengthEnum | null;
+    expiration?: string | null;
+    location: PublicCloudCommonLocation;
+    metadata?: Record<string, string> | null;
+    mode?: PublicCloudKeyManagerModeEnum | null;
+    name?: string | null;
+    payload?: string | null;
+    payloadContentType?: PublicCloudKeyManagerPayloadContentTypeEnum | null;
+    secretType: PublicCloudKeyManagerSecretTypeEnum;
+}
+/** Type of a Key Manager secret */
+export type PublicCloudKeyManagerSecretTypeEnum = "CERTIFICATE" | "OPAQUE" | "PASSPHRASE" | "PRIVATE" | "PUBLIC" | "SYMMETRIC";
+/** Payload to update a Public Cloud Key Manager secret */
+export interface PublicCloudKeyManagerSecretUpdate {
+    checksum: string;
+    targetSpec: PublicCloudKeyManagerSecretUpdateTargetSpec;
+}
+/** Target specification for updating a Key Manager secret (only metadata is mutable) */
+export interface PublicCloudKeyManagerSecretUpdateTargetSpec {
+    metadata: Record<string, string>;
+}
+/** Current state of a health monitor from OpenStack */
+export interface PublicCloudLoadbalancerHealthMonitorCurrentState {
+    delay?: number;
+    domainName?: string | null;
+    expectedCodes?: string | null;
+    httpMethod?: string | null;
+    httpVersion?: string | null;
+    id?: string;
+    maxRetries?: number;
+    maxRetriesDown?: number | null;
+    name?: string | null;
+    operatingStatus?: string | null;
+    provisioningStatus?: string | null;
+    timeout?: number;
+    type?: PublicCloudLoadbalancerHealthMonitorTypeEnum;
+    urlPath?: string | null;
+}
+/** HTTP method used by the health monitor for HTTP/HTTPS type probes */
+export type PublicCloudLoadbalancerHealthMonitorHttpMethodEnum = "CONNECT" | "DELETE" | "GET" | "HEAD" | "OPTIONS" | "PATCH" | "POST" | "PUT" | "TRACE";
+/** Desired specification for creating a health monitor on a pool */
+export interface PublicCloudLoadbalancerHealthMonitorTargetSpec {
+    delay: number;
+    domainName?: string | null;
+    expectedCodes?: string | null;
+    httpMethod?: PublicCloudLoadbalancerHealthMonitorHttpMethodEnum | null;
+    httpVersion?: string | null;
+    maxRetries: number;
+    maxRetriesDown?: number | null;
+    name?: string | null;
+    timeout: number;
+    type: PublicCloudLoadbalancerHealthMonitorTypeEnum;
+    urlPath?: string | null;
+}
+/** Type of health monitor probe */
+export type PublicCloudLoadbalancerHealthMonitorTypeEnum = "HTTP" | "HTTPS" | "PING" | "SCTP" | "TCP" | "TLS_HELLO" | "UDP_CONNECT";
+/** Desired specification for updating a health monitor on a pool (excludes immutable fields) */
+export interface PublicCloudLoadbalancerHealthMonitorUpdateTargetSpec {
+    delay: number;
+    domainName?: string | null;
+    expectedCodes?: string | null;
+    httpMethod?: PublicCloudLoadbalancerHealthMonitorHttpMethodEnum | null;
+    httpVersion?: string | null;
+    maxRetries: number;
+    maxRetriesDown?: number | null;
+    name?: string | null;
+    timeout: number;
+    urlPath?: string | null;
+}
+/** A Public Cloud load balancer L7 policy */
+export interface PublicCloudLoadbalancerL7Policy {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudLoadbalancerL7PolicyCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudLoadbalancerL7PolicyTargetSpec;
+    updatedAt?: string;
+}
+/** Action to take when an L7 policy matches */
+export type PublicCloudLoadbalancerL7PolicyActionEnum = "REDIRECT_PREFIX" | "REDIRECT_TO_POOL" | "REDIRECT_TO_URL" | "REJECT";
+/** Payload to create a Public Cloud load balancer L7 policy */
+export interface PublicCloudLoadbalancerL7PolicyCreation {
+    targetSpec: PublicCloudLoadbalancerL7PolicyTargetSpec;
+}
+/** Current state of an L7 policy from OpenStack */
+export interface PublicCloudLoadbalancerL7PolicyCurrentState {
+    action?: PublicCloudLoadbalancerL7PolicyActionEnum;
+    description?: string | null;
+    name?: string | null;
+    operatingStatus?: PublicCloudLoadbalancerLoadbalancerOperatingStatusEnum | null;
+    position?: number | null;
+    provisioningStatus?: PublicCloudLoadbalancerLoadbalancerProvisioningStatusEnum | null;
+    redirectHttpCode?: number | null;
+    redirectPool?: PublicCloudLoadbalancerL7PolicyRedirectPoolDetail | null;
+    redirectPrefix?: string | null;
+    redirectUrl?: string | null;
+    rules?: PublicCloudLoadbalancerL7RuleState[] | null;
+}
+/** Pool details for an L7 policy redirect in current state */
+export interface PublicCloudLoadbalancerL7PolicyRedirectPoolDetail {
+    id?: string;
+}
+/** Reference to a pool for L7 policy redirect */
+export interface PublicCloudLoadbalancerL7PolicyRedirectPoolRef {
+    id: string;
+}
+/** Desired specification for creating an L7 policy */
+export interface PublicCloudLoadbalancerL7PolicyTargetSpec {
+    action: PublicCloudLoadbalancerL7PolicyActionEnum;
+    description?: string | null;
+    name?: string | null;
+    position?: number | null;
+    redirectHttpCode?: number | null;
+    redirectPool?: PublicCloudLoadbalancerL7PolicyRedirectPoolRef | null;
+    redirectPrefix?: string | null;
+    redirectUrl?: string | null;
+    rules?: PublicCloudLoadbalancerL7RuleSpec[] | null;
+}
+/** Payload to update a Public Cloud load balancer L7 policy */
+export interface PublicCloudLoadbalancerL7PolicyUpdate {
+    checksum: string;
+    targetSpec: PublicCloudLoadbalancerL7PolicyUpdateTargetSpec;
+}
+/** Updatable specification for an L7 policy (all fields are mutable) */
+export interface PublicCloudLoadbalancerL7PolicyUpdateTargetSpec {
+    action: PublicCloudLoadbalancerL7PolicyActionEnum;
+    description?: string | null;
+    name?: string | null;
+    position?: number | null;
+    redirectHttpCode?: number | null;
+    redirectPool?: PublicCloudLoadbalancerL7PolicyRedirectPoolRef | null;
+    redirectPrefix?: string | null;
+    redirectUrl?: string | null;
+    rules?: PublicCloudLoadbalancerL7RuleSpec[] | null;
+}
+/** Comparison method for an L7 rule */
+export type PublicCloudLoadbalancerL7RuleCompareTypeEnum = "CONTAINS" | "ENDS_WITH" | "EQUAL_TO" | "REGEX" | "STARTS_WITH";
+/** Desired specification for an L7 rule embedded in an L7 policy */
+export interface PublicCloudLoadbalancerL7RuleSpec {
+    compareType: PublicCloudLoadbalancerL7RuleCompareTypeEnum;
+    invert?: boolean | null;
+    key?: string | null;
+    type: PublicCloudLoadbalancerL7RuleTypeEnum;
+    value: string;
+}
+/** Current state of an L7 rule from OpenStack */
+export interface PublicCloudLoadbalancerL7RuleState {
+    compareType?: string;
+    id?: string;
+    invert?: boolean | null;
+    key?: string | null;
+    operatingStatus?: PublicCloudLoadbalancerLoadbalancerOperatingStatusEnum | null;
+    provisioningStatus?: PublicCloudLoadbalancerLoadbalancerProvisioningStatusEnum | null;
+    type?: string;
+    value?: string;
+}
+/** Type of attribute to match in an L7 rule */
+export type PublicCloudLoadbalancerL7RuleTypeEnum = "COOKIE" | "FILE_TYPE" | "HEADER" | "HOST_NAME" | "PATH";
+/** A Public Cloud load balancer listener */
+export interface PublicCloudLoadbalancerListener {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudLoadbalancerListenerCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudLoadbalancerListenerTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud load balancer listener */
+export interface PublicCloudLoadbalancerListenerCreation {
+    targetSpec: PublicCloudLoadbalancerListenerTargetSpec;
+}
+/** Current state of a load balancer listener from OpenStack */
+export interface PublicCloudLoadbalancerListenerCurrentState {
+    allowedCidrs?: string[] | null;
+    connectionLimit?: number | null;
+    defaultPool?: PublicCloudLoadbalancerListenerDefaultPoolDetail | null;
+    defaultTlsContainerRef?: string | null;
+    description?: string | null;
+    insertHeaders?: PublicCloudLoadbalancerListenerInsertHeaders | null;
+    name?: string;
+    operatingStatus?: PublicCloudLoadbalancerLoadbalancerOperatingStatusEnum;
+    protocol?: PublicCloudLoadbalancerListenerProtocolEnum;
+    protocolPort?: number;
+    provisioningStatus?: PublicCloudLoadbalancerLoadbalancerProvisioningStatusEnum;
+    sniContainerRefs?: string[] | null;
+    timeoutClientData?: number | null;
+    timeoutMemberConnect?: number | null;
+    timeoutMemberData?: number | null;
+    timeoutTcpInspect?: number | null;
+    tlsVersions?: string[] | null;
+}
+/** Default pool details for a listener in current state */
+export interface PublicCloudLoadbalancerListenerDefaultPoolDetail {
+    id?: string;
+}
+/** Reference to a default pool for a listener */
+export interface PublicCloudLoadbalancerListenerDefaultPoolRef {
+    id: string;
+}
+/** Headers that the load balancer inserts into requests before forwarding to backend members */
+export interface PublicCloudLoadbalancerListenerInsertHeaders {
+    xForwardedFor?: boolean | null;
+    xForwardedPort?: boolean | null;
+    xForwardedProto?: boolean | null;
+    xSslClientDn?: boolean | null;
+    xSslClientHasCert?: boolean | null;
+    xSslClientVerify?: boolean | null;
+}
+/** Protocol of a load balancer listener */
+export type PublicCloudLoadbalancerListenerProtocolEnum = "HTTP" | "HTTPS" | "SCTP" | "TCP" | "TERMINATED_HTTPS" | "UDP";
+/** Desired specification for updating a load balancer listener (excludes immutable fields) */
+export interface PublicCloudLoadbalancerListenerPutTargetSpec {
+    allowedCidrs?: string[] | null;
+    connectionLimit?: number | null;
+    defaultPool?: PublicCloudLoadbalancerListenerDefaultPoolRef | null;
+    defaultTlsContainerRef?: string | null;
+    description?: string | null;
+    insertHeaders?: PublicCloudLoadbalancerListenerInsertHeaders | null;
+    name: string;
+    sniContainerRefs?: string[] | null;
+    timeoutClientData?: number | null;
+    timeoutMemberConnect?: number | null;
+    timeoutMemberData?: number | null;
+    timeoutTcpInspect?: number | null;
+    tlsVersions?: string[] | null;
+}
+/** Desired specification for creating a load balancer listener */
+export interface PublicCloudLoadbalancerListenerTargetSpec {
+    allowedCidrs?: string[] | null;
+    connectionLimit?: number | null;
+    defaultPool?: PublicCloudLoadbalancerListenerDefaultPoolRef | null;
+    defaultTlsContainerRef?: string | null;
+    description?: string | null;
+    insertHeaders?: PublicCloudLoadbalancerListenerInsertHeaders | null;
+    name: string;
+    protocol: PublicCloudLoadbalancerListenerProtocolEnum;
+    protocolPort: number;
+    sniContainerRefs?: string[] | null;
+    timeoutClientData?: number | null;
+    timeoutMemberConnect?: number | null;
+    timeoutMemberData?: number | null;
+    timeoutTcpInspect?: number | null;
+    tlsVersions?: string[] | null;
+}
+/** Payload to update a Public Cloud load balancer listener */
+export interface PublicCloudLoadbalancerListenerUpdate {
+    checksum: string;
+    targetSpec: PublicCloudLoadbalancerListenerPutTargetSpec;
+}
+/** A Public Cloud load balancer */
+export interface PublicCloudLoadbalancerLoadbalancer {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudLoadbalancerLoadbalancerCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudLoadbalancerLoadbalancerTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud load balancer */
+export interface PublicCloudLoadbalancerLoadbalancerCreation {
+    targetSpec: PublicCloudLoadbalancerLoadbalancerTargetSpec;
+}
+/** Current state of a load balancer from OpenStack */
+export interface PublicCloudLoadbalancerLoadbalancerCurrentState {
+    description?: string;
+    flavor?: PublicCloudLoadbalancerLoadbalancerFlavorRef;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    operatingStatus?: PublicCloudLoadbalancerLoadbalancerOperatingStatusEnum;
+    provisioningStatus?: PublicCloudLoadbalancerLoadbalancerProvisioningStatusEnum;
+    vipAddress?: string;
+    vipNetwork?: PublicCloudLoadbalancerLoadbalancerNetworkRef;
+    vipSubnet?: PublicCloudLoadbalancerLoadbalancerSubnetRef;
+}
+/** Available Octavia load balancer flavor names */
+export type PublicCloudLoadbalancerLoadbalancerFlavorNameEnum = "LARGE" | "MEDIUM" | "SMALL" | "XL";
+/** Reference to an Octavia flavor by name */
+export interface PublicCloudLoadbalancerLoadbalancerFlavorRef {
+    name: PublicCloudLoadbalancerLoadbalancerFlavorNameEnum;
+}
+/** Reference to a network */
+export interface PublicCloudLoadbalancerLoadbalancerNetworkRef {
+    id: string;
+}
+/** Operating status of a load balancer */
+export type PublicCloudLoadbalancerLoadbalancerOperatingStatusEnum = "DEGRADED" | "DRAINING" | "ERROR" | "NO_MONITOR" | "OFFLINE" | "ONLINE";
+/** Provisioning status of a load balancer in OpenStack */
+export type PublicCloudLoadbalancerLoadbalancerProvisioningStatusEnum = "ACTIVE" | "DELETED" | "ERROR" | "PENDING_CREATE" | "PENDING_DELETE" | "PENDING_UPDATE";
+/** Desired specification for updating a load balancer (excludes immutable fields) */
+export interface PublicCloudLoadbalancerLoadbalancerPutTargetSpec {
+    description?: string | null;
+    name: string;
+}
+/** Reference to a subnet */
+export interface PublicCloudLoadbalancerLoadbalancerSubnetRef {
+    id: string;
+}
+/** Desired specification for a load balancer */
+export interface PublicCloudLoadbalancerLoadbalancerTargetSpec {
+    description?: string | null;
+    flavor: PublicCloudLoadbalancerLoadbalancerFlavorRef;
+    location: PublicCloudCommonLocation;
+    name: string;
+    vipNetwork: PublicCloudLoadbalancerLoadbalancerNetworkRef;
+    vipSubnet: PublicCloudLoadbalancerLoadbalancerSubnetRef;
+}
+/** Payload to update a Public Cloud load balancer */
+export interface PublicCloudLoadbalancerLoadbalancerUpdate {
+    checksum: string;
+    targetSpec: PublicCloudLoadbalancerLoadbalancerPutTargetSpec;
+}
+/** A Public Cloud load balancer pool member */
+export interface PublicCloudLoadbalancerMember {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudLoadbalancerMemberCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudLoadbalancerMemberTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud load balancer pool member */
+export interface PublicCloudLoadbalancerMemberCreation {
+    targetSpec: PublicCloudLoadbalancerMemberTargetSpec;
+}
+/** Current state of a load balancer pool member from OpenStack */
+export interface PublicCloudLoadbalancerMemberCurrentState {
+    address?: string;
+    backup?: boolean | null;
+    monitor?: PublicCloudLoadbalancerMemberMonitor | null;
+    name?: string;
+    operatingStatus?: PublicCloudLoadbalancerLoadbalancerOperatingStatusEnum;
+    protocolPort?: number;
+    provisioningStatus?: PublicCloudLoadbalancerLoadbalancerProvisioningStatusEnum;
+    subnet?: PublicCloudLoadbalancerLoadbalancerSubnetRef | null;
+    weight?: number;
+}
+/** Alternate address and port for health monitoring of a pool member */
+export interface PublicCloudLoadbalancerMemberMonitor {
+    address?: string | null;
+    port?: number | null;
+}
+/** Desired specification for creating a load balancer pool member */
+export interface PublicCloudLoadbalancerMemberTargetSpec {
+    address: string;
+    backup?: boolean | null;
+    monitor?: PublicCloudLoadbalancerMemberMonitor | null;
+    name?: string | null;
+    protocolPort: number;
+    subnet?: PublicCloudLoadbalancerLoadbalancerSubnetRef | null;
+    weight?: number | null;
+}
+/** Payload to update a Public Cloud load balancer pool member */
+export interface PublicCloudLoadbalancerMemberUpdate {
+    checksum: string;
+    targetSpec: PublicCloudLoadbalancerMemberUpdateTargetSpec;
+}
+/** Desired specification for updating a load balancer pool member (excludes immutable fields) */
+export interface PublicCloudLoadbalancerMemberUpdateTargetSpec {
+    backup?: boolean | null;
+    monitor?: PublicCloudLoadbalancerMemberMonitor | null;
+    name?: string | null;
+    weight?: number | null;
+}
+/** A Public Cloud load balancer pool */
+export interface PublicCloudLoadbalancerPool {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudLoadbalancerPoolCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudLoadbalancerPoolTargetSpec;
+    updatedAt?: string;
+}
+/** Load balancing algorithm for a pool */
+export type PublicCloudLoadbalancerPoolAlgorithmEnum = "LEAST_CONNECTIONS" | "ROUND_ROBIN" | "SOURCE_IP" | "SOURCE_IP_PORT";
+/** Payload to create a Public Cloud load balancer pool */
+export interface PublicCloudLoadbalancerPoolCreation {
+    targetSpec: PublicCloudLoadbalancerPoolTargetSpec;
+}
+/** Current state of a load balancer pool from OpenStack */
+export interface PublicCloudLoadbalancerPoolCurrentState {
+    algorithm?: PublicCloudLoadbalancerPoolAlgorithmEnum;
+    description?: string | null;
+    healthMonitor?: PublicCloudLoadbalancerHealthMonitorCurrentState | null;
+    name?: string | null;
+    operatingStatus?: PublicCloudLoadbalancerLoadbalancerOperatingStatusEnum;
+    persistence?: PublicCloudLoadbalancerSessionPersistence | null;
+    protocol?: PublicCloudLoadbalancerPoolProtocolEnum;
+    provisioningStatus?: PublicCloudLoadbalancerLoadbalancerProvisioningStatusEnum;
+}
+/** Protocol of a load balancer pool */
+export type PublicCloudLoadbalancerPoolProtocolEnum = "HTTP" | "HTTPS" | "PROXY" | "PROXYV2" | "SCTP" | "TCP" | "UDP";
+/** Desired specification for creating a load balancer pool */
+export interface PublicCloudLoadbalancerPoolTargetSpec {
+    algorithm: PublicCloudLoadbalancerPoolAlgorithmEnum;
+    description?: string | null;
+    healthMonitor?: PublicCloudLoadbalancerHealthMonitorTargetSpec | null;
+    name?: string | null;
+    persistence?: PublicCloudLoadbalancerSessionPersistence | null;
+    protocol: PublicCloudLoadbalancerPoolProtocolEnum;
+}
+/** Payload to update a Public Cloud load balancer pool */
+export interface PublicCloudLoadbalancerPoolUpdate {
+    checksum: string;
+    targetSpec: PublicCloudLoadbalancerPoolUpdateTargetSpec;
+}
+/** Desired specification for updating a load balancer pool (excludes immutable fields) */
+export interface PublicCloudLoadbalancerPoolUpdateTargetSpec {
+    algorithm: PublicCloudLoadbalancerPoolAlgorithmEnum;
+    description?: string | null;
+    healthMonitor?: PublicCloudLoadbalancerHealthMonitorUpdateTargetSpec | null;
+    name?: string | null;
+    persistence?: PublicCloudLoadbalancerSessionPersistence | null;
+}
+/** Session persistence configuration for a load balancer pool */
+export interface PublicCloudLoadbalancerSessionPersistence {
+    cookieName?: string | null;
+    type: PublicCloudLoadbalancerSessionPersistenceTypeEnum;
+}
+/** Type of session persistence for a load balancer pool */
+export type PublicCloudLoadbalancerSessionPersistenceTypeEnum = "APP_COOKIE" | "HTTP_COOKIE" | "SOURCE_IP";
+/** A Public Cloud network */
+export interface PublicCloudNetworkNetwork {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudNetworkNetworkCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudNetworkNetworkTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud network */
+export interface PublicCloudNetworkNetworkCreation {
+    targetSpec: PublicCloudNetworkNetworkTargetSpec;
+}
+/** Current state of a network from OpenStack */
+export interface PublicCloudNetworkNetworkCurrentState {
+    description?: string;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+}
+/** Desired specification for updating a network (excludes immutable fields) */
+export interface PublicCloudNetworkNetworkPutTargetSpec {
+    name: string;
+}
+/** Desired specification for a network */
+export interface PublicCloudNetworkNetworkTargetSpec {
+    description?: string | null;
+    location: PublicCloudCommonLocation;
+    name: string;
+}
+/** Payload to update a Public Cloud network */
+export interface PublicCloudNetworkNetworkUpdate {
+    checksum: string;
+    targetSpec: PublicCloudNetworkNetworkPutTargetSpec;
+}
+/** A Public Cloud subnet */
+export interface PublicCloudNetworkSubnet {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudNetworkSubnetCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudNetworkSubnetTargetSpec;
+    updatedAt?: string;
+}
+/** IP address pool for dynamic allocation within a subnet */
+export interface PublicCloudNetworkSubnetAllocationPool {
+    end: string;
+    start: string;
+}
+/** Payload to create a Public Cloud subnet */
+export interface PublicCloudNetworkSubnetCreation {
+    targetSpec: PublicCloudNetworkSubnetTargetSpec;
+}
+/** Current state of a subnet from OpenStack */
+export interface PublicCloudNetworkSubnetCurrentState {
+    allocationPools?: PublicCloudNetworkSubnetAllocationPool[] | null;
+    cidr?: string;
+    description?: string;
+    dhcpEnabled?: boolean;
+    dnsNameservers?: string[] | null;
+    gatewayIp?: string | null;
+    hostRoutes?: PublicCloudNetworkSubnetHostRoute[] | null;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+}
+/** Static host route for devices in a subnet */
+export interface PublicCloudNetworkSubnetHostRoute {
+    destination?: string;
+    nextHop?: string;
+}
+/** Desired specification for updating a subnet (excludes immutable fields) */
+export interface PublicCloudNetworkSubnetPutTargetSpec {
+    allocationPools?: PublicCloudNetworkSubnetAllocationPool[] | null;
+    description?: string | null;
+    dhcpEnabled?: boolean | null;
+    dnsNameservers?: string[] | null;
+    gatewayIp?: string | null;
+    name: string;
+}
+/** Desired specification for a subnet */
+export interface PublicCloudNetworkSubnetTargetSpec {
+    allocationPools?: PublicCloudNetworkSubnetAllocationPool[] | null;
+    cidr: string;
+    description?: string | null;
+    dhcpEnabled?: boolean | null;
+    dnsNameservers?: string[] | null;
+    gatewayIp?: string | null;
+    location: PublicCloudCommonLocation;
+    name: string;
+}
+/** Payload to update a Public Cloud subnet */
+export interface PublicCloudNetworkSubnetUpdate {
+    checksum: string;
+    targetSpec: PublicCloudNetworkSubnetPutTargetSpec;
+}
+/** Possible values for cloud project mode */
+export type PublicCloudProjectModeEnum = "CLASSIC" | "DISCOVERY";
+/** A Public Cloud project */
+export interface PublicCloudProjectProjectAsync {
+    createdAt?: string;
+    currentState?: PublicCloudProjectProjectCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    name?: string | null;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudProjectProjectTargetSpec;
+    updatedAt?: string;
+}
+/** A Public Cloud project */
+export interface PublicCloudProjectProjectAsyncWithIAM {
+    createdAt?: string;
+    currentState?: PublicCloudProjectProjectCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    iam?: IamResourceMetadata | null;
+    id?: string;
+    name?: string | null;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudProjectProjectTargetSpec;
+    updatedAt?: string;
+}
+/** Input parameters for creating a cloud project. */
+export interface PublicCloudProjectProjectCreation {
+    targetSpec: PublicCloudProjectProjectTargetSpec;
+}
+/** Current state of the cloud project */
+export interface PublicCloudProjectProjectCurrentState {
+    mode?: PublicCloudProjectModeEnum;
+    name?: string;
+}
+/** Target specification of the cloud project */
+export interface PublicCloudProjectProjectTargetSpec {
+    mode: PublicCloudProjectModeEnum;
+    name: string;
+}
+/** A Public Cloud project quota */
+export interface PublicCloudQuotaQuota {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudQuotaQuotaCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudQuotaQuotaTargetSpec;
+    updatedAt?: string;
+}
+/** Current state of the project quota */
+export interface PublicCloudQuotaQuotaCurrentState {
+    availableProfiles?: PublicCloudQuotaQuotaProfile[] | null;
+    preventAutomaticQuotaUpgrade?: boolean;
+    regions?: PublicCloudQuotaQuotaRegionCurrentState[] | null;
+}
+/** Quota limit without usage tracking (for per-item size caps) */
+export interface PublicCloudQuotaQuotaLimit {
+    limit?: number;
+    unit?: PublicCloudQuotaQuotaUnitEnum;
+}
+/** A Public Cloud quota profile (read-only reference data) */
+export interface PublicCloudQuotaQuotaProfile {
+    compute?: PublicCloudQuotaQuotaProfileCompute | null;
+    keyManager?: PublicCloudQuotaQuotaProfileKeyManager | null;
+    keypair?: PublicCloudQuotaQuotaProfileKeypair | null;
+    loadbalancer?: PublicCloudQuotaQuotaProfileLoadbalancer | null;
+    name?: string;
+    network?: PublicCloudQuotaQuotaProfileNetwork | null;
+    share?: PublicCloudQuotaQuotaProfileShare | null;
+    volume?: PublicCloudQuotaQuotaProfileVolume | null;
+}
+/** Compute limits for a quota profile */
+export interface PublicCloudQuotaQuotaProfileCompute {
+    cores?: number;
+    instances?: number;
+    memory?: number;
+}
+/** Key manager limits for a quota profile */
+export interface PublicCloudQuotaQuotaProfileKeyManager {
+    containers?: number;
+    secrets?: number;
+}
+/** Keypair limits for a quota profile */
+export interface PublicCloudQuotaQuotaProfileKeypair {
+    keypairs?: number;
+}
+/** Loadbalancer limits for a quota profile */
+export interface PublicCloudQuotaQuotaProfileLoadbalancer {
+    healthMonitors?: number;
+    l7Policies?: number;
+    l7Rules?: number;
+    listeners?: number;
+    loadbalancers?: number;
+    members?: number;
+    pools?: number;
+}
+/** Network limits for a quota profile */
+export interface PublicCloudQuotaQuotaProfileNetwork {
+    floatingIps?: number;
+    gateways?: number;
+    networks?: number;
+    securityGroupRules?: number;
+    securityGroups?: number;
+    subnets?: number;
+}
+/** File storage limits for a quota profile */
+export interface PublicCloudQuotaQuotaProfileShare {
+    backups?: number;
+    backupSizeTotal?: number;
+    shares?: number;
+    sizeTotal?: number;
+    snapshots?: number;
+}
+/** Block storage limits for a quota profile */
+export interface PublicCloudQuotaQuotaProfileVolume {
+    backups?: number;
+    backupSizeTotal?: number;
+    sizeTotal?: number;
+    snapshots?: number;
+    volumes?: number;
+}
+/** Per-region compute quota usage */
+export interface PublicCloudQuotaQuotaRegionCompute {
+    cores?: PublicCloudQuotaQuotaUsage;
+    instances?: PublicCloudQuotaQuotaUsage;
+    memory?: PublicCloudQuotaQuotaUsage;
+}
+/** Current state of the project quota in a single region */
+export interface PublicCloudQuotaQuotaRegionCurrentState {
+    location?: PublicCloudCommonLocation;
+    profile?: string;
+    usage?: PublicCloudQuotaQuotaUsageDetails | null;
+}
+/** Per-region key manager quota usage */
+export interface PublicCloudQuotaQuotaRegionKeyManager {
+    containers?: PublicCloudQuotaQuotaUsage;
+    secrets?: PublicCloudQuotaQuotaUsage;
+}
+/** Per-region keypair quota */
+export interface PublicCloudQuotaQuotaRegionKeypair {
+    keypairs?: PublicCloudQuotaQuotaUsage;
+}
+/** Per-region load balancer quota usage */
+export interface PublicCloudQuotaQuotaRegionLoadbalancer {
+    healthMonitors?: PublicCloudQuotaQuotaUsage;
+    l7Policies?: PublicCloudQuotaQuotaUsage;
+    l7Rules?: PublicCloudQuotaQuotaUsage;
+    listeners?: PublicCloudQuotaQuotaUsage;
+    loadbalancers?: PublicCloudQuotaQuotaUsage;
+    members?: PublicCloudQuotaQuotaUsage;
+    pools?: PublicCloudQuotaQuotaUsage;
+}
+/** Per-region network quota usage */
+export interface PublicCloudQuotaQuotaRegionNetwork {
+    floatingIps?: PublicCloudQuotaQuotaUsage;
+    gateways?: PublicCloudQuotaQuotaUsage;
+    networks?: PublicCloudQuotaQuotaUsage;
+    securityGroupRules?: PublicCloudQuotaQuotaUsage;
+    securityGroups?: PublicCloudQuotaQuotaUsage;
+    subnets?: PublicCloudQuotaQuotaUsage;
+}
+/** Per-region file storage quota usage */
+export interface PublicCloudQuotaQuotaRegionShare {
+    backups?: PublicCloudQuotaQuotaUsage;
+    backupSizeTotal?: PublicCloudQuotaQuotaUsage;
+    perShareSize?: PublicCloudQuotaQuotaLimit;
+    shareNetworks?: PublicCloudQuotaQuotaUsage;
+    shares?: PublicCloudQuotaQuotaUsage;
+    sizeTotal?: PublicCloudQuotaQuotaUsage;
+    snapshots?: PublicCloudQuotaQuotaUsage;
+    snapshotSizeTotal?: PublicCloudQuotaQuotaUsage;
+}
+/** Target specification for the project quota in a single region */
+export interface PublicCloudQuotaQuotaRegionTargetSpec {
+    location: PublicCloudCommonLocation;
+    profile: string;
+}
+/** Per-region volume quota usage */
+export interface PublicCloudQuotaQuotaRegionVolume {
+    backups?: PublicCloudQuotaQuotaUsage;
+    backupSizeTotal?: PublicCloudQuotaQuotaUsage;
+    perVolumeSize?: PublicCloudQuotaQuotaLimit;
+    sizeTotal?: PublicCloudQuotaQuotaUsage;
+    snapshots?: PublicCloudQuotaQuotaUsage;
+    volumes?: PublicCloudQuotaQuotaUsage;
+}
+/** Target specification for the project quota */
+export interface PublicCloudQuotaQuotaTargetSpec {
+    preventAutomaticQuotaUpgrade?: boolean;
+    regions?: PublicCloudQuotaQuotaRegionTargetSpec[];
+}
+/** Unit of measurement for quota limits and usage */
+export type PublicCloudQuotaQuotaUnitEnum = "COUNT" | "GB" | "GiB" | "MB" | "MiB";
+/** Payload to update a Public Cloud project quota */
+export interface PublicCloudQuotaQuotaUpdate {
+    checksum: string;
+    targetSpec: PublicCloudQuotaQuotaUpdateTargetSpec;
+}
+/** Update specification for the project quota */
+export interface PublicCloudQuotaQuotaUpdateTargetSpec {
+    preventAutomaticQuotaUpgrade: boolean;
+    regions: PublicCloudQuotaQuotaRegionTargetSpec[];
+}
+/** Quota usage with limit and current consumption */
+export interface PublicCloudQuotaQuotaUsage {
+    limit?: number;
+    unit?: PublicCloudQuotaQuotaUnitEnum;
+    used?: number | null;
+}
+/** Quota usage across all services for a single region */
+export interface PublicCloudQuotaQuotaUsageDetails {
+    compute?: PublicCloudQuotaQuotaRegionCompute | null;
+    keyManager?: PublicCloudQuotaQuotaRegionKeyManager | null;
+    keypair?: PublicCloudQuotaQuotaRegionKeypair | null;
+    loadbalancer?: PublicCloudQuotaQuotaRegionLoadbalancer | null;
+    network?: PublicCloudQuotaQuotaRegionNetwork | null;
+    share?: PublicCloudQuotaQuotaRegionShare | null;
+    volume?: PublicCloudQuotaQuotaRegionVolume | null;
+}
+/** Represents a username/password couple for a managed Rancher user */
+export interface PublicCloudRancherCredentials {
+    password?: string;
+    username?: string;
+}
+/** A managed Rancher service eligibility reference, applicable to service creations */
+export interface PublicCloudRancherEligibilityReference {
+    freeTrial?: boolean;
+}
+/** Allowed CIDR block for a managed Rancher service's IP restrictions */
+export interface PublicCloudRancherIpRestriction {
+    cidrBlock: string;
+    description: string;
+}
+/** Networking properties of a managed Rancher service */
+export interface PublicCloudRancherNetworking {
+    egressCidrBlocks?: string[];
+}
+/** A managed Rancher service plan capability, applicable to an existing managed Rancher */
+export interface PublicCloudRancherPlanCapability {
+    cause?: PublicCloudRancherPlanUnavailabilityCauseEnum | null;
+    message?: string | null;
+    name?: PublicCloudRancherPlanEnum;
+    status?: PublicCloudRancherPlanCapabilityStatusEnum;
+}
+/** Possible statuses for a managed Rancher plan capability, applicable to an existing managed Rancher */
+export type PublicCloudRancherPlanCapabilityStatusEnum = "AVAILABLE" | "CURRENT" | "UNAVAILABLE";
+/** Possible values for managed Rancher plans */
+export type PublicCloudRancherPlanEnum = "OVHCLOUD_EDITION" | "STANDARD";
+/** A managed Rancher service plan reference, applicable to service creations */
+export interface PublicCloudRancherPlanReference {
+    cause?: PublicCloudRancherPlanUnavailabilityCauseEnum | null;
+    message?: string | null;
+    name?: PublicCloudRancherPlanEnum;
+    status?: PublicCloudRancherPlanReferenceStatusEnum;
+}
+/** Possible statuses for a managed Rancher plan reference */
+export type PublicCloudRancherPlanReferenceStatusEnum = "AVAILABLE" | "UNAVAILABLE";
+/** Possible causes for a managed Rancher plan being unavailable */
+export type PublicCloudRancherPlanUnavailabilityCauseEnum = "CANNOT_DOWNGRADE_USING_HIGHER_FEATURES" | "CANNOT_SWITCH_PLAN_FOR_ALPHA" | "NOT_IMPLEMENTED";
+/** A managed Rancher service object */
+export interface PublicCloudRancherRancher {
+    createdAt?: string;
+    currentState?: PublicCloudRancherRancherCurrentState;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudRancherRancherTargetSpec;
+    updatedAt?: string;
+}
+/** Input parameters for creating a managed Rancher service. */
+export interface PublicCloudRancherRancherCreation {
+    targetSpec: PublicCloudRancherRancherCreationTargetSpec;
+}
+/** Target specification of the managed Rancher service */
+export interface PublicCloudRancherRancherCreationTargetSpec {
+    iamAuthEnabled?: boolean;
+    name: string;
+    plan: PublicCloudRancherPlanEnum;
+    version?: string;
+}
+/** Current state of the managed Rancher service */
+export interface PublicCloudRancherRancherCurrentState {
+    bootstrapPassword?: string | null;
+    iamAuthEnabled?: boolean | null;
+    ipRestrictions?: PublicCloudRancherIpRestriction[] | null;
+    name?: string;
+    networking?: PublicCloudRancherNetworking | null;
+    plan?: PublicCloudRancherPlanEnum;
+    region?: PublicCloudRancherRegionEnum;
+    url?: string | null;
+    usage?: PublicCloudRancherUsage | null;
+    version?: string;
+}
+/** Target specification of the managed Rancher service */
+export interface PublicCloudRancherRancherTargetSpec {
+    iamAuthEnabled?: boolean;
+    ipRestrictions?: PublicCloudRancherIpRestriction[];
+    name: string;
+    plan: PublicCloudRancherPlanEnum;
+    version: string;
+}
+/** Input for managed Rancher service update. */
+export interface PublicCloudRancherRancherUpdate {
+    targetSpec: PublicCloudRancherRancherTargetSpec;
+}
+/** Possible values for managed Rancher regions */
+export type PublicCloudRancherRegionEnum = "EU_WEST_GRA" | "EU_WEST_RBX" | "EU_WEST_SBG";
+/** A metric sample about a managed Rancher usage */
+export interface PublicCloudRancherUsage {
+    datetime?: string;
+    orchestratedVcpus?: number;
+}
+/** A managed Rancher service version capability, applicable to an existing managed Rancher */
+export interface PublicCloudRancherVersionCapability {
+    cause?: PublicCloudRancherVersionUnavailabilityCauseEnum | null;
+    changelogUrl?: string;
+    message?: string | null;
+    name?: string;
+    status?: PublicCloudRancherVersionCapabilityStatusEnum;
+}
+/** Possible statuses for a managed Rancher version capability, applicable to an existing managed Rancher */
+export type PublicCloudRancherVersionCapabilityStatusEnum = "AVAILABLE" | "UNAVAILABLE";
+/** A managed Rancher service version reference, applicable to service creations */
+export interface PublicCloudRancherVersionReference {
+    cause?: PublicCloudRancherVersionUnavailabilityCauseEnum | null;
+    changelogUrl?: string;
+    message?: string | null;
+    name?: string;
+    status?: PublicCloudRancherVersionReferenceStatusEnum;
+}
+/** Possible statuses for a managed Rancher version reference */
+export type PublicCloudRancherVersionReferenceStatusEnum = "AVAILABLE" | "UNAVAILABLE";
+/** Possible causes for a managed Rancher version being unavailable */
+export type PublicCloudRancherVersionUnavailabilityCauseEnum = "CANNOT_UPGRADE_MULTIPLE_VERSIONS" | "DEPRECATED" | "DISABLED" | "END_OF_LIFE" | "END_OF_SALE" | "END_OF_SUPPORT";
+/** A Public Cloud instance flavor (read-only reference data) */
+export interface PublicCloudReferenceInstanceFlavor {
+    description?: string | null;
+    disk?: number;
+    ephemeral?: number;
+    id?: string;
+    isPublic?: boolean;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    ram?: number;
+    swap?: number;
+    vcpus?: number;
+}
+/** A Public Cloud instance image (read-only reference data) */
+export interface PublicCloudReferenceInstanceImage {
+    createdAt?: string;
+    id?: string;
+    location?: PublicCloudCommonLocation;
+    minDisk?: number;
+    minRam?: number;
+    name?: string;
+    size?: number;
+    status?: PublicCloudInstanceImageStatusEnum;
+    updatedAt?: string;
+    visibility?: PublicCloudInstanceImageVisibilityEnum;
+}
+/** A Public Cloud region (read-only reference data) */
+export interface PublicCloudReferenceRegion {
+    availabilityZones?: string[] | null;
+    continent?: string;
+    country?: string | null;
+    datacenterName?: string | null;
+    name?: string;
+    services?: string[];
+    status?: PublicCloudReferenceRegionStatusEnum;
+}
+/** Possible statuses for a cloud region */
+export type PublicCloudReferenceRegionStatusEnum = "DISABLED" | "ENABLED" | "MAINTENANCE";
+/** Ethernet type for a security group rule */
+export type PublicCloudSecurityGroupEthernetTypeEnum = "IPV4" | "IPV6";
+/** Network protocol for a security group rule */
+export type PublicCloudSecurityGroupProtocolEnum = "AH" | "DCCP" | "EGP" | "ESP" | "GRE" | "ICMP" | "ICMPV6" | "IGMP" | "OSPF" | "PGM" | "RSVP" | "SCTP" | "TCP" | "UDP" | "UDPLITE" | "VRRP";
+/** A Public Cloud security group */
+export interface PublicCloudSecurityGroupSecurityGroup {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudSecurityGroupSecurityGroupCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudSecurityGroupSecurityGroupTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud security group */
+export interface PublicCloudSecurityGroupSecurityGroupCreation {
+    targetSpec: PublicCloudSecurityGroupSecurityGroupTargetSpec;
+}
+/** Current state of a security group from OpenStack */
+export interface PublicCloudSecurityGroupSecurityGroupCurrentState {
+    defaultRules?: PublicCloudSecurityGroupSecurityGroupStateRule[] | null;
+    description?: string | null;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    rules?: PublicCloudSecurityGroupSecurityGroupStateRule[];
+}
+/** Reference to a security group */
+export interface PublicCloudSecurityGroupSecurityGroupRef {
+    id: string;
+}
+/** Actual firewall rule from OpenStack for a security group */
+export interface PublicCloudSecurityGroupSecurityGroupStateRule {
+    description?: string | null;
+    direction?: PublicCloudSecurityGroupTrafficFlowEnum;
+    ethernetType?: PublicCloudSecurityGroupEthernetTypeEnum;
+    id?: string;
+    portRangeMax?: number | null;
+    portRangeMin?: number | null;
+    protocol?: PublicCloudSecurityGroupProtocolEnum | null;
+    remoteGroup?: PublicCloudSecurityGroupSecurityGroupRef | null;
+    remoteIpPrefix?: string | null;
+}
+/** Desired firewall rule for a security group */
+export interface PublicCloudSecurityGroupSecurityGroupTargetRule {
+    description?: string | null;
+    direction: PublicCloudSecurityGroupTrafficFlowEnum;
+    ethernetType: PublicCloudSecurityGroupEthernetTypeEnum;
+    portRangeMax?: number | null;
+    portRangeMin?: number | null;
+    protocol?: PublicCloudSecurityGroupProtocolEnum | null;
+    remoteGroup?: PublicCloudSecurityGroupSecurityGroupRef | null;
+    remoteIpPrefix?: string | null;
+}
+/** Desired specification for creating a security group */
+export interface PublicCloudSecurityGroupSecurityGroupTargetSpec {
+    description?: string | null;
+    location: PublicCloudCommonLocation;
+    name: string;
+    rules?: PublicCloudSecurityGroupSecurityGroupTargetRule[] | null;
+}
+/** Payload to update a Public Cloud security group */
+export interface PublicCloudSecurityGroupSecurityGroupUpdate {
+    checksum: string;
+    targetSpec: PublicCloudSecurityGroupSecurityGroupUpdateTargetSpec;
+}
+/** Desired specification for updating a security group (mutable fields only) */
+export interface PublicCloudSecurityGroupSecurityGroupUpdateTargetSpec {
+    description?: string | null;
+    name: string;
+    rules?: PublicCloudSecurityGroupSecurityGroupTargetRule[] | null;
+}
+/** Flow rule of traffic for a security group rule */
+export type PublicCloudSecurityGroupTrafficFlowEnum = "EGRESS" | "INGRESS";
+/** A Public Cloud SSH key (stored in database, synced to OpenStack on instance creation) */
+export interface PublicCloudSshKeySSHKey {
+    createdAt?: string;
+    name?: string;
+    publicKey?: string;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud SSH key */
+export interface PublicCloudSshKeySSHKeyCreation {
+    name: string;
+    publicKey: string;
+}
+/** A Public Cloud file storage (NFS share) */
+export interface PublicCloudStorageFileFileStorage {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudStorageFileFileStorageCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudStorageFileFileStorageTargetSpec;
+    updatedAt?: string;
+}
+/** Access levels for file storage access rules */
+export type PublicCloudStorageFileFileStorageAccessLevelEnum = "READ_ONLY" | "READ_WRITE";
+/** An access rule controlling which IP addresses can access a file storage */
+export interface PublicCloudStorageFileFileStorageAccessRule {
+    accessLevel?: PublicCloudStorageFileFileStorageAccessLevelEnum;
+    accessTo?: string;
+    createdAt?: string | null;
+    id?: string;
+    state?: PublicCloudStorageFileFileStorageAccessRuleStateEnum;
+}
+/** Input for an access rule controlling which IP addresses can access a file storage */
+export interface PublicCloudStorageFileFileStorageAccessRuleInput {
+    accessLevel: PublicCloudStorageFileFileStorageAccessLevelEnum;
+    accessTo: string;
+}
+/** Possible states for a file storage access rule */
+export type PublicCloudStorageFileFileStorageAccessRuleStateEnum = "ACTIVE" | "APPLYING" | "DENYING" | "ERROR";
+/** Payload to create a Public Cloud file storage */
+export interface PublicCloudStorageFileFileStorageCreation {
+    targetSpec: PublicCloudStorageFileFileStorageTargetSpec;
+}
+/** Current state of a file storage as observed from the infrastructure */
+export interface PublicCloudStorageFileFileStorageCurrentState {
+    accessRules?: PublicCloudStorageFileFileStorageAccessRule[] | null;
+    description?: string | null;
+    exportLocations?: PublicCloudStorageFileFileStorageExportLocation[] | null;
+    location?: PublicCloudCommonLocation;
+    name?: string;
+    networkId?: string;
+    protocol?: PublicCloudStorageFileFileStorageProtocolEnum;
+    shareType?: PublicCloudStorageFileFileStorageTypeEnum;
+    size?: number;
+    subnetId?: string;
+}
+/** An NFS export path for a file storage */
+export interface PublicCloudStorageFileFileStorageExportLocation {
+    path?: string;
+    preferred?: boolean;
+}
+/** Supported file sharing protocols */
+export type PublicCloudStorageFileFileStorageProtocolEnum = "NFS";
+/** A snapshot of a Public Cloud file storage (NFS share) */
+export interface PublicCloudStorageFileFileStorageSnapshot {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudStorageFileFileStorageSnapshotCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudStorageFileFileStorageSnapshotTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create a Public Cloud file storage snapshot */
+export interface PublicCloudStorageFileFileStorageSnapshotCreation {
+    targetSpec: PublicCloudStorageFileFileStorageSnapshotTargetSpec;
+}
+/** Current state of a file storage snapshot as observed from the infrastructure */
+export interface PublicCloudStorageFileFileStorageSnapshotCurrentState {
+    description?: string | null;
+    location?: PublicCloudCommonLocation;
+    name?: string | null;
+    shareId?: string;
+    shareProto?: PublicCloudStorageFileFileStorageProtocolEnum;
+    shareSize?: number;
+    snapshotSize?: number;
+}
+/** Target specification for a file storage snapshot */
+export interface PublicCloudStorageFileFileStorageSnapshotTargetSpec {
+    description?: string | null;
+    location: PublicCloudCommonLocation;
+    name?: string | null;
+    shareId: string;
+}
+/** Payload to update a Public Cloud file storage snapshot */
+export interface PublicCloudStorageFileFileStorageSnapshotUpdate {
+    checksum: string;
+    targetSpec: PublicCloudStorageFileFileStorageSnapshotUpdateTargetSpec;
+}
+/** Target specification for updating a file storage snapshot (only name and description are mutable) */
+export interface PublicCloudStorageFileFileStorageSnapshotUpdateTargetSpec {
+    description?: string | null;
+    name?: string | null;
+}
+/** Target specification for a file storage */
+export interface PublicCloudStorageFileFileStorageTargetSpec {
+    accessRules?: PublicCloudStorageFileFileStorageAccessRuleInput[] | null;
+    description?: string | null;
+    location: PublicCloudCommonLocation;
+    name: string;
+    networkId: string;
+    protocol: PublicCloudStorageFileFileStorageProtocolEnum;
+    shareType: PublicCloudStorageFileFileStorageTypeEnum;
+    size: number;
+    subnetId: string;
+}
+/** Supported file storage types (performance tiers) */
+export type PublicCloudStorageFileFileStorageTypeEnum = "STANDARD_1AZ";
+/** Payload to update a Public Cloud file storage */
+export interface PublicCloudStorageFileFileStorageUpdate {
+    checksum: string;
+    targetSpec: PublicCloudStorageFileFileStorageUpdateTargetSpec;
+}
+/** Target specification for updating a file storage (immutable fields like protocol, shareType, networkId, subnetId are excluded) */
+export interface PublicCloudStorageFileFileStorageUpdateTargetSpec {
+    accessRules?: PublicCloudStorageFileFileStorageAccessRuleInput[] | null;
+    description?: string | null;
+    name: string;
+    size: number;
+}
+/** An S3-compatible object storage bucket */
+export interface PublicCloudStorageObjectBucket {
+    checksum?: string;
+    createdAt?: string;
+    currentState?: PublicCloudStorageObjectBucketCurrentState | null;
+    currentTasks?: CommonCurrentTask[] | null;
+    id?: string;
+    resourceStatus?: CommonResourceStatusEnum;
+    targetSpec?: PublicCloudStorageObjectBucketTargetSpec;
+    updatedAt?: string;
+}
+/** Payload to create an S3 bucket */
+export interface PublicCloudStorageObjectBucketCreation {
+    targetSpec: PublicCloudStorageObjectBucketTargetSpec;
+}
+/** Current observed state of an S3 bucket from the S3 backend */
+export interface PublicCloudStorageObjectBucketCurrentState {
+    encryption?: PublicCloudStorageObjectBucketEncryptionConfig | null;
+    location?: PublicCloudStorageObjectBucketLocation;
+    name?: string;
+    objectLock?: PublicCloudStorageObjectBucketObjectLockConfig | null;
+    tags?: Record<string, string> | null;
+    versioning?: PublicCloudStorageObjectBucketVersioningConfig | null;
+}
+/** Supported encryption algorithms for S3 buckets */
+export type PublicCloudStorageObjectBucketEncryptionAlgorithmEnum = "AES256";
+/** Server-side encryption configuration for an S3 bucket */
+export interface PublicCloudStorageObjectBucketEncryptionConfig {
+    algorithm: PublicCloudStorageObjectBucketEncryptionAlgorithmEnum;
+}
+/** Geographic region for an S3 bucket */
+export interface PublicCloudStorageObjectBucketLocation {
+    region: string;
+}
+/** Object lock (WORM) configuration for an S3 bucket */
+export interface PublicCloudStorageObjectBucketObjectLockConfig {
+    mode: PublicCloudStorageObjectBucketObjectLockModeEnum;
+    retentionDays: number;
+    retentionYears?: number | null;
+}
+/** Object lock retention modes */
+export type PublicCloudStorageObjectBucketObjectLockModeEnum = "COMPLIANCE" | "GOVERNANCE";
+/** Target specification for an S3 bucket */
+export interface PublicCloudStorageObjectBucketTargetSpec {
+    encryption?: PublicCloudStorageObjectBucketEncryptionConfig | null;
+    location: PublicCloudStorageObjectBucketLocation;
+    name: string;
+    objectLock?: PublicCloudStorageObjectBucketObjectLockConfig | null;
+    ownerUserId?: string | null;
+    tags?: Record<string, string> | null;
+    versioning?: PublicCloudStorageObjectBucketVersioningConfig | null;
+}
+/** Payload to update an S3 bucket */
+export interface PublicCloudStorageObjectBucketUpdate {
+    checksum: string;
+    targetSpec: PublicCloudStorageObjectBucketUpdateTargetSpec;
+}
+/** Target specification for updating an S3 bucket (mutable fields only) */
+export interface PublicCloudStorageObjectBucketUpdateTargetSpec {
+    encryption?: PublicCloudStorageObjectBucketEncryptionConfig | null;
+    objectLock?: PublicCloudStorageObjectBucketObjectLockConfig | null;
+    ownerUserId?: string | null;
+    tags?: Record<string, string> | null;
+    versioning?: PublicCloudStorageObjectBucketVersioningConfig | null;
+}
+/** Versioning configuration for an S3 bucket */
+export interface PublicCloudStorageObjectBucketVersioningConfig {
+    status: PublicCloudStorageObjectBucketVersioningStatusEnum;
+}
+/** Versioning status for an S3 bucket */
+export type PublicCloudStorageObjectBucketVersioningStatusEnum = "DISABLED" | "ENABLED" | "SUSPENDED";
+/** An S3 bucket lifecycle rule */
+export interface PublicCloudStorageObjectLifecycleRule {
+    abortIncompleteMultipartUpload?: PublicCloudStorageObjectLifecycleRuleAbortIncompleteMultipartUpload | null;
+    expiration?: PublicCloudStorageObjectLifecycleRuleExpiration | null;
+    filter?: PublicCloudStorageObjectLifecycleRuleFilter | null;
+    id: string;
+    noncurrentVersionExpiration?: PublicCloudStorageObjectLifecycleRuleNoncurrentVersionExpiration | null;
+    noncurrentVersionTransitions?: PublicCloudStorageObjectLifecycleRuleNoncurrentVersionTransition[] | null;
+    status: PublicCloudStorageObjectLifecycleRuleStatusEnum;
+    transitions?: PublicCloudStorageObjectLifecycleRuleTransition[] | null;
+}
+/** Settings for aborting incomplete multipart uploads in a lifecycle rule */
+export interface PublicCloudStorageObjectLifecycleRuleAbortIncompleteMultipartUpload {
+    daysAfterInitiation: number;
+}
+/** Expiration settings for current object versions in a lifecycle rule */
+export interface PublicCloudStorageObjectLifecycleRuleExpiration {
+    date?: string | null;
+    days?: number | null;
+    expiredObjectDeleteMarker?: boolean | null;
+}
+/** Filter criteria to select which objects a lifecycle rule applies to */
+export interface PublicCloudStorageObjectLifecycleRuleFilter {
+    objectSizeGreaterThan?: number | null;
+    objectSizeLessThan?: number | null;
+    prefix?: string | null;
+    tags?: Record<string, string> | null;
+}
+/** Expiration settings for noncurrent object versions in a lifecycle rule */
+export interface PublicCloudStorageObjectLifecycleRuleNoncurrentVersionExpiration {
+    newerNoncurrentVersions?: number | null;
+    noncurrentDays: number;
+}
+/** Storage class transition for noncurrent object versions */
+export interface PublicCloudStorageObjectLifecycleRuleNoncurrentVersionTransition {
+    newerNoncurrentVersions?: number | null;
+    noncurrentDays: number;
+    storageClass: PublicCloudStorageObjectStorageClassEnum;
+}
+/** Payload to replace all lifecycle rules for an S3 bucket */
+export interface PublicCloudStorageObjectLifecycleRulePut {
+    rules: PublicCloudStorageObjectLifecycleRule[];
+}
+/** Response containing lifecycle rules for an S3 bucket */
+export interface PublicCloudStorageObjectLifecycleRulesResponse {
+    rules?: PublicCloudStorageObjectLifecycleRule[];
+}
+/** Possible statuses for an S3 bucket lifecycle rule */
+export type PublicCloudStorageObjectLifecycleRuleStatusEnum = "DISABLED" | "ENABLED";
+/** Storage class transition for current object versions */
+export interface PublicCloudStorageObjectLifecycleRuleTransition {
+    date?: string | null;
+    days?: number | null;
+    storageClass: PublicCloudStorageObjectStorageClassEnum;
+}
+/** An S3 bucket replication rule */
+export interface PublicCloudStorageObjectReplicationRule {
+    deleteMarkerReplication: PublicCloudStorageObjectReplicationRuleStatusEnum;
+    destination: PublicCloudStorageObjectReplicationRuleDestination;
+    filter?: PublicCloudStorageObjectReplicationRuleFilter | null;
+    id: string;
+    priority: number;
+    status: PublicCloudStorageObjectReplicationRuleStatusEnum;
+}
+/** Destination configuration for replicated objects */
+export interface PublicCloudStorageObjectReplicationRuleDestination {
+    name: string;
+    region: string;
+    storageClass?: PublicCloudStorageObjectStorageClassEnum | null;
+}
+/** Filter criteria to select which objects a replication rule applies to */
+export interface PublicCloudStorageObjectReplicationRuleFilter {
+    prefix?: string | null;
+    tags?: Record<string, string> | null;
+}
+/** Payload to replace all replication rules for an S3 bucket */
+export interface PublicCloudStorageObjectReplicationRulePut {
+    rules: PublicCloudStorageObjectReplicationRule[];
+}
+/** Response containing replication rules for an S3 bucket */
+export interface PublicCloudStorageObjectReplicationRulesResponse {
+    rules?: PublicCloudStorageObjectReplicationRule[];
+}
+/** Possible statuses for an S3 bucket replication rule */
+export type PublicCloudStorageObjectReplicationRuleStatusEnum = "DISABLED" | "ENABLED";
+/** Available S3 storage classes */
+export type PublicCloudStorageObjectStorageClassEnum = "DEEP_ARCHIVE" | "GLACIER_IR" | "HIGH_PERF" | "STANDARD" | "STANDARD_IA";
+//# sourceMappingURL=types.d.ts.map

@@ -1,0 +1,167 @@
+/** Asynchronous operation currently running */
+export interface CommonCurrentTask {
+    errors?: CommonTaskError[] | null;
+    id?: string;
+    link?: string;
+    status?: CommonCurrentTaskStatusEnum | null;
+    type?: string;
+}
+/** Current status of a task. A task in ERROR cannot be retried without your inputs. PENDING tasks will be executed as soon as possible. A RUNNING task is currently executing your original request. SCHEDULED is used for tasks that will be executed in the future */
+export type CommonCurrentTaskStatusEnum = "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Asynchronous operation */
+export interface CommonTask {
+    createdAt?: string;
+    errors?: CommonTaskError[] | null;
+    finishedAt?: string | null;
+    id?: string;
+    link?: string;
+    message?: string;
+    progress?: CommonTaskProgress[];
+    startedAt?: string | null;
+    status?: CommonTaskStatusEnum;
+    type?: string;
+    updatedAt?: string;
+}
+/** Errors that occured on the task */
+export interface CommonTaskError {
+    message?: string;
+}
+/** Detailed information about an asynchronous operation progress steps */
+export interface CommonTaskProgress {
+    name?: string;
+    status?: CommonTaskStatusEnum;
+}
+/** TaskStatusEnum */
+export type CommonTaskStatusEnum = "DONE" | "ERROR" | "PENDING" | "RUNNING" | "SCHEDULED" | "WAITING_USER_INPUT";
+/** Asynchronous operation */
+export interface CommonTaskWithInputsT {
+    createdAt?: string;
+    errors?: CommonTaskError[] | null;
+    finishedAt?: string | null;
+    id?: string;
+    inputs: unknown;
+    link?: string;
+    message?: string;
+    progress?: CommonTaskProgress[];
+    startedAt?: string | null;
+    status?: CommonTaskStatusEnum;
+    type?: string;
+    updatedAt?: string;
+}
+/** A contact mean */
+export interface NotificationContactMeanContactMean {
+    createdAt?: string;
+    currentTasks?: CommonCurrentTask[];
+    default?: boolean;
+    description?: string | null;
+    email?: string | null;
+    error?: string | null;
+    id?: string;
+    status?: NotificationContactMeanStatusEnum;
+    type?: NotificationContactMeanTypeEnum;
+}
+/** Type of a contact mean */
+export type NotificationContactMeanContactMeanTypeEnum = "EMAIL";
+/** Payload to create a new contact mean */
+export interface NotificationContactMeanPostInput {
+    description?: string | null;
+    email?: string;
+    type: NotificationContactMeanTypeEnum;
+}
+/** Status of a contact mean */
+export type NotificationContactMeanStatusEnum = "DISABLED" | "ERROR" | "TO_VALIDATE" | "VALID";
+/** Contact mean task input */
+export interface NotificationContactMeanTaskInputs {
+    otp?: string;
+    resendOTP?: string;
+}
+/** Type of a contact mean */
+export type NotificationContactMeanTypeEnum = "EMAIL";
+/** Payload to validate the contact mean */
+export interface NotificationContactMeanValidateInput {
+    otp: string;
+}
+/** Attachment linked to a notification (full version) */
+export interface NotificationHistoryAttachment {
+    contentType?: string;
+    name?: string;
+    sizeBytes?: number;
+    url?: string | null;
+}
+/** Contact attempt made for a notification */
+export interface NotificationHistoryContact {
+    error?: string | null;
+    id?: string;
+    sentAt?: string | null;
+    status?: NotificationHistoryContactStatusEnum;
+    to?: string;
+    type?: NotificationContactMeanContactMeanTypeEnum;
+}
+/** Status of a notification contact attempt */
+export type NotificationHistoryContactStatusEnum = "BOUNCED" | "DELIVERED" | "DROPPED" | "QUEUED" | "SENT";
+/** Notification sent to this account */
+export interface NotificationHistoryNotification {
+    attachments?: NotificationHistoryAttachment[];
+    categories?: string[];
+    contacts?: NotificationHistoryContact[];
+    createdAt?: string;
+    html?: string | null;
+    id?: string;
+    priority?: NotificationHistoryNotificationPriorityEnum;
+    summary?: string | null;
+    text?: string | null;
+    title?: string;
+}
+/** Priority of a notification */
+export type NotificationHistoryNotificationPriorityEnum = "HIGH" | "LOW" | "MEDIUM";
+/** Reference data for /notification */
+export interface NotificationReferenceReference {
+    categories?: NotificationReferenceReferenceCategory[];
+    priorities?: NotificationReferenceReferencePriority[];
+}
+/** Category of a notification */
+export interface NotificationReferenceReferenceCategory {
+    description?: string;
+    name?: string;
+}
+/** Priority of a notification */
+export interface NotificationReferenceReferencePriority {
+    description?: string;
+    name?: NotificationHistoryNotificationPriorityEnum;
+}
+/** A routing */
+export interface NotificationRoutingPostInput {
+    active: boolean;
+    name: string;
+    rules: NotificationRoutingRule[];
+}
+/** A routing */
+export interface NotificationRoutingRouting {
+    active?: boolean;
+    createdAt?: string;
+    id?: string;
+    name?: string;
+    rules?: NotificationRoutingRule[];
+}
+/** A routing */
+export interface NotificationRoutingRule {
+    condition: NotificationRoutingRuleCondition;
+    contactMeans: NotificationRoutingRuleContactMean[];
+    continue: boolean;
+}
+/** A routing */
+export interface NotificationRoutingRuleCondition {
+    category?: string[];
+    priority?: string[];
+}
+/** A routing */
+export interface NotificationRoutingRuleContactMean {
+    email?: string;
+    error?: string | null;
+    id: string;
+    status?: NotificationContactMeanStatusEnum;
+    type?: NotificationContactMeanTypeEnum;
+}
+/** Choose how to order some results */
+export type NotificationSortOrderEnum = "ASC" | "DESC";
+//# sourceMappingURL=types.d.ts.map
