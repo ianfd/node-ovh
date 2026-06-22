@@ -1,8 +1,7 @@
 {
-  "name": "@ovhcloud/node-ovh",
-  "version": "3.0.6",
-  "description": "Official Node.js wrapper for the OVH APIs",
-  "homepage": "http://ovh.github.io/node-ovh",
+  "name": "@accelome/node-ovh",
+  "version": "1.0.0",
+  "description": "Community Node.js wrapper for the OVH APIs",
   "author": "OVH SAS",
   "license": "MIT",
   "keywords": [
@@ -12,60 +11,44 @@
     "api.ovh.com"
   ],
   "files": [
-    "lib",
     "dist",
     "schemas",
     "examples"
   ],
-  "main": "./lib/ovh.es5.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./lib/ovh.es5.js",
-      "default": "./lib/ovh.es5.js"
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./v2": {
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./lib/*": "./lib/*",
     "./package.json": "./package.json"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ovh/node-ovh.git"
+    "url": "https://github.com/ianfd/node-ovh.git"
   },
   "bugs": {
-    "url": "https://github.com/ovh/node-ovh/issues"
+    "url": "https://github.com/ianfd/node-ovh/issues"
   },
-  "dependencies": {
-    "async": "0.9.x",
-    "bluebird": "^3.4.0",
-    "simple-oauth2": "^5.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@babel/cli": "^7.24.7",
-    "@babel/core": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
-    "commit-and-tag-version": "^12.4.1",
-    "istanbul": "latest",
-    "jshint": "latest",
-    "mocha": "latest",
-    "nock": "latest",
     "typescript": "^5.7.2"
   },
   "scripts": {
+    "build": "bun run build:v2",
     "build:v2": "tsc -p tsconfig.json",
+    "typecheck": "bun run typecheck:v2",
     "typecheck:v2": "tsc -p tsconfig.v2-tests.json",
     "generate:v2": "node scripts/generate-v2-client.js",
-    "compile": "npx babel --presets @babel/preset-env lib/ovh.js --out-file lib/ovh.es5.js",
-    "compile:watch": "npx babel -w --presets @babel/preset-env lib/ovh.js --out-file lib/ovh.es5.js",
-    "release": "commit-and-tag-version",
     "test:v2": "bun run build:v2 && bun run typecheck:v2 && node --test tests/v2/*.test.js tests/v2/*.integration.test.js",
-    "test": "node_modules/.bin/jshint lib/endpoints.js lib/ovh.js tests && npm run-script test-cov && npm run-script test-without-proxies",
-    "test-without-proxies": "node node_modules/.bin/mocha -g Proxy -i --reporter spec --ui exports tests/*.js",
-    "test-cov": "node ./node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- --reporter spec --ui exports --check-leaks tests/*.js",
-    "test-integration": "node node_modules/mocha/bin/_mocha tests/integration/*.js && node node_modules/.bin/mocha -g Proxy -i --reporter spec --ui exports tests/integration/*.js"
+    "test": "bun run test:v2"
   }
 }

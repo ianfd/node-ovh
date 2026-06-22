@@ -1,4 +1,4 @@
-import { OvhClient, oauth2 } from '@ovhcloud/node-ovh/v2';
+import { OvhClient, oauth2 } from '@accelome/node-ovh';
 
 const projectId = requiredEnv('OVH_PROJECT_ID');
 const region = process.env.OVH_S3_REGION ?? 'GRA';
