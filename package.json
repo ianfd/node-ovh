@@ -37,9 +37,6 @@
   "bugs": {
     "url": "https://github.com/ianfd/node-ovh/issues"
   },
-  "dependencies": {
-    "@accelome/node-ovh": "git+https://github.com/ianfd/node-ovh.git"
-  },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "typescript": "^5.7.2"
