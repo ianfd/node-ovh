@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "@ovhcloud/node-ovh",
+      "dependencies": {
+        "@accelome/node-ovh": "git+https://github.com/ianfd/node-ovh.git",
+      },
       "devDependencies": {
         "@types/node": "^22.10.2",
         "typescript": "^5.7.2",
@@ -11,6 +14,8 @@
     },
   },
   "packages": {
+    "@accelome/node-ovh": ["@accelome/node-ovh@github:ianfd/node-ovh#ff7cd4d", {}, "ianfd-node-ovh-ff7cd4d", "sha512-xyf6F7hXgr6+xHzL8CQTbhsHx/DqyLfyv8JmD/aBaqu4nqhYFNN1+yxB46u7DkQPBIuzLg79VTY/El9UyAHZHw=="],
+
     "@types/node": ["@types/node@22.19.21", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-VMeFBSCKQKmm2swI2kW51SFusDqekC6q9trBCvJ/JliDchFSuoYYKN7yVNjPthP1HKZcx3U1gI/wTcEBjEFKTA=="],
 
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
